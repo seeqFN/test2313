@@ -396,15 +396,15 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
           </div>
           <div class="s-row">
             <span class="s-row-label">Amount</span>
-            <input class="s-input" id="walletBalance" type="number" placeholder="0" value="1745385.83" inputmode="decimal">
+            <input class="s-input" id="walletBalance" type="text" placeholder="0" value="1745385.83">
           </div>
           <div class="s-row">
             <span class="s-row-label">USD Change</span>
-            <input class="s-input" id="walletChangeUSD" type="text" placeholder="-1000" value="-22749.13" inputmode="decimal">
+            <input class="s-input" id="walletChangeUSD" type="text" placeholder="-1000" value="-22749.13">
           </div>
           <div class="s-row" style="margin-bottom:0">
             <span class="s-row-label">% Change</span>
-            <input class="s-input" id="walletChangePct" type="text" placeholder="-1.30%" value="-1.30" inputmode="decimal">
+            <input class="s-input" id="walletChangePct" type="text" placeholder="-1.30%" value="-1.30">
           </div>
         </div>
 
@@ -413,7 +413,7 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
           <div class="s-section-label">Cash Balance</div>
           <div class="s-row">
             <span class="s-row-label">Amount</span>
-            <input class="s-input" id="cashAmount" type="number" placeholder="0" value="0" inputmode="decimal">
+            <input class="s-input" id="cashAmount" type="text" placeholder="0" value="0">
           </div>
           <div class="s-toggle-row">
             <span class="s-row-label">Show</span>
@@ -431,9 +431,9 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
               <div class="tb-icon"><svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="15" fill="#000"/><defs><linearGradient id="sg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#9945FF"/><stop offset="100%" stop-color="#14F195"/></linearGradient></defs><rect x="7" y="10" width="16" height="2.5" rx="1.2" fill="url(#sg2)"/><rect x="7" y="14" width="16" height="2.5" rx="1.2" fill="url(#sg2)"/><rect x="7" y="18" width="16" height="2.5" rx="1.2" fill="url(#sg2)"/></svg></div>
               <span class="tb-name">Solana (SOL)</span>
             </div>
-            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_SOL" type="number" placeholder="0" value="6254.825" inputmode="decimal"></div>
-            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_SOL_usd" type="number" placeholder="0" value="525000" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_SOL_pnl" type="text" placeholder="0" value="-18500.50" inputmode="decimal"></div>
+            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_SOL" type="text" placeholder="0" value="6254.825"></div>
+            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_SOL_usd" type="text" placeholder="0" value="525000"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_SOL_pnl" type="text" placeholder="0" value="-18500.50"></div>
           </div>
 
           <div class="tb-row">
@@ -441,9 +441,9 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
               <div class="tb-icon"><svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="15" fill="#fff"/><polygon points="15,6 15,17 21,14" fill="#8A92B2" opacity=".8"/><polygon points="15,6 15,17 9,14" fill="#454A75"/><polygon points="15,18 15,25 21,16" fill="#8A92B2" opacity=".7"/><polygon points="15,18 15,25 9,16" fill="#454A75"/></svg></div>
               <span class="tb-name">Ethereum (ETH)</span>
             </div>
-            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_ETH" type="number" placeholder="0" value="593.16852" inputmode="decimal"></div>
-            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_ETH_usd" type="number" placeholder="0" value="211234.50" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_ETH_pnl" type="text" placeholder="0" value="-5234.20" inputmode="decimal"></div>
+            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_ETH" type="text" placeholder="0" value="593.16852"></div>
+            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_ETH_usd" type="text" placeholder="0" value="211234.50"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_ETH_pnl" type="text" placeholder="0" value="-5234.20"></div>
           </div>
 
           <div class="tb-row">
@@ -451,9 +451,9 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
               <div class="tb-icon"><svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="15" fill="#F7931A"/><text x="50%" y="57%" text-anchor="middle" dominant-baseline="middle" font-size="15" font-weight="900" fill="white" font-family="Arial">₿</text></svg></div>
               <span class="tb-name">Bitcoin (BTC)</span>
             </div>
-            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_BTC" type="number" placeholder="0" value="55.2" inputmode="decimal"></div>
-            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_BTC_usd" type="number" placeholder="0" value="1500000" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_BTC_pnl" type="text" placeholder="0" value="-45000.75" inputmode="decimal"></div>
+            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_BTC" type="text" placeholder="0" value="55.2"></div>
+            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_BTC_usd" type="text" placeholder="0" value="1500000"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_BTC_pnl" type="text" placeholder="0" value="-45000.75"></div>
           </div>
 
           <div class="tb-row">
@@ -461,9 +461,9 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
               <div class="tb-icon"><svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="15" fill="#fff"/><circle cx="15" cy="15" r="8" fill="none" stroke="#7c6ef7" stroke-width="2"/><circle cx="15" cy="15" r="3" fill="#7c6ef7"/><line x1="15" y1="7" x2="15" y2="23" stroke="#7c6ef7" stroke-width="1.5"/><line x1="7" y1="15" x2="23" y2="15" stroke="#7c6ef7" stroke-width="1.5"/></svg></div>
               <span class="tb-name">Monad (MON)</span>
             </div>
-            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_MON" type="number" placeholder="0" value="0" inputmode="decimal"></div>
-            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_MON_usd" type="number" placeholder="0" value="0" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_MON_pnl" type="text" placeholder="0" value="0" inputmode="decimal"></div>
+            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_MON" type="text" placeholder="0" value="0"></div>
+            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_MON_usd" type="text" placeholder="0" value="0"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_MON_pnl" type="text" placeholder="0" value="0"></div>
           </div>
 
           <div class="tb-row">
@@ -471,9 +471,9 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
               <div class="tb-icon"><svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="15" fill="#4DA2FF"/><path d="M15 7c-2 3-5 5-5 9a5 5 0 0010 0c0-4-3-6-5-9z" fill="white" opacity=".9"/></svg></div>
               <span class="tb-name">Sui (SUI)</span>
             </div>
-            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_SUI" type="number" placeholder="0" value="0" inputmode="decimal"></div>
-            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_SUI_usd" type="number" placeholder="0" value="0" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_SUI_pnl" type="text" placeholder="0" value="0" inputmode="decimal"></div>
+            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_SUI" type="text" placeholder="0" value="0"></div>
+            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_SUI_usd" type="text" placeholder="0" value="0"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_SUI_pnl" type="text" placeholder="0" value="0"></div>
           </div>
 
           <div class="tb-row">
@@ -481,9 +481,9 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
               <div class="tb-icon"><svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="15" fill="#8247E5"/><path d="M20 12.5l-5-3-5 3v6l5 3 5-3v-6z" fill="none" stroke="white" stroke-width="1.5"/></svg></div>
               <span class="tb-name">Polygon (POL)</span>
             </div>
-            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_POL" type="number" placeholder="0" value="0" inputmode="decimal"></div>
-            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_POL_usd" type="number" placeholder="0" value="0" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_POL_pnl" type="text" placeholder="0" value="0" inputmode="decimal"></div>
+            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_POL" type="text" placeholder="0" value="0"></div>
+            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_POL_usd" type="text" placeholder="0" value="0"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_POL_pnl" type="text" placeholder="0" value="0"></div>
           </div>
 
           <div class="tb-row">
@@ -491,9 +491,9 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
               <div class="tb-icon"><svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="15" fill="#1a1a2e"/><path d="M8 18c2-4 4-6 7-6s5 2 7 6" stroke="#00d4aa" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
               <span class="tb-name">Hyperliquid (HYPE)</span>
             </div>
-            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_HYPE" type="number" placeholder="0" value="0" inputmode="decimal"></div>
-            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_HYPE_usd" type="number" placeholder="0" value="0" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_HYPE_pnl" type="text" placeholder="0" value="0" inputmode="decimal"></div>
+            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_HYPE" type="text" placeholder="0" value="0"></div>
+            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_HYPE_usd" type="text" placeholder="0" value="0"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_HYPE_pnl" type="text" placeholder="0" value="0"></div>
           </div>
 
           <div class="tb-row">
@@ -501,9 +501,9 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
               <div class="tb-icon"><svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="15" fill="#26A17B"/><text x="50%" y="57%" text-anchor="middle" dominant-baseline="middle" font-size="14" font-weight="700" fill="white" font-family="Arial">T</text></svg></div>
               <span class="tb-name">Tether (USDT)</span>
             </div>
-            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_USDT" type="number" placeholder="0" value="0" inputmode="decimal"></div>
-            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_USDT_usd" type="number" placeholder="0" value="0" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_USDT_pnl" type="text" placeholder="0" value="0" inputmode="decimal"></div>
+            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_USDT" type="text" placeholder="0" value="0"></div>
+            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_USDT_usd" type="text" placeholder="0" value="0"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_USDT_pnl" type="text" placeholder="0" value="0"></div>
           </div>
 
           <div class="tb-row">
@@ -511,9 +511,9 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
               <div class="tb-icon"><svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="15" fill="#2775CA"/><circle cx="15" cy="15" r="9" fill="none" stroke="white" stroke-width="1.5"/><text x="50%" y="57%" text-anchor="middle" dominant-baseline="middle" font-size="10" font-weight="700" fill="white" font-family="Arial">$</text></svg></div>
               <span class="tb-name">USD Coin (USDC)</span>
             </div>
-            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_USDC" type="number" placeholder="0" value="86400" inputmode="decimal"></div>
-            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_USDC_usd" type="number" placeholder="0" value="86400" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_USDC_pnl" type="text" placeholder="0" value="0" inputmode="decimal"></div>
+            <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_USDC" type="text" placeholder="0" value="86400"></div>
+            <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_USDC_usd" type="text" placeholder="0" value="86400"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_USDC_pnl" type="text" placeholder="0" value="0"></div>
           </div>
         </div>
 
@@ -522,17 +522,17 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
           <div class="s-section-label">Auto Balance on Refresh</div>
           <div class="ab-row">
             <span class="ab-label">Token Amount</span>
-            <input class="s-input" id="abSolAmount" type="number" placeholder="0" value="0" inputmode="decimal">
+            <input class="s-input" id="abSolAmount" type="text" placeholder="0" value="0">
             <span class="ab-suffix">SOL</span>
           </div>
           <div class="ab-row">
             <span class="ab-label">USD Value</span>
-            <input class="s-input" id="abSolUSD" type="number" placeholder="0" value="0" inputmode="decimal">
+            <input class="s-input" id="abSolUSD" type="text" placeholder="0" value="0">
             <span class="ab-suffix">USD</span>
           </div>
           <div class="ab-row">
             <span class="ab-label">Every</span>
-            <input class="s-input" id="abEvery" type="number" placeholder="1" value="1" inputmode="numeric" oninput="abTarget=parseInt(this.value)||1;updateProgress()">
+            <input class="s-input" id="abEvery" type="text" placeholder="1" value="1" oninput="abTarget=Math.max(1,parseNum(this.value)|0);updateProgress()">
             <span class="ab-suffix">refresh(es)</span>
           </div>
           <div class="progress-row">
@@ -602,7 +602,14 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 function parseSignedValue(val) {
   if (val === null || val === undefined) return 0;
-  const cleaned = String(val).replace(/[%,$\s]/g, '');
+  const cleaned = String(val).replace(/[%,$\s]/g, '').replace(/,/g, '');
+  const num = parseFloat(cleaned);
+  return isNaN(num) ? 0 : num;
+}
+
+function parseNum(val) {
+  if (val === null || val === undefined) return 0;
+  const cleaned = String(val).replace(/[$€£¥\s]/g, '').replace(/,/g, '');
   const num = parseFloat(cleaned);
   return isNaN(num) ? 0 : num;
 }
@@ -725,7 +732,7 @@ function updateProgress() {
 
 function resetCounter() {
   abCounter = 0;
-  abTarget = parseInt(document.getElementById('abEvery').value) || 1;
+  abTarget = Math.max(1, parseNum(document.getElementById('abEvery').value) | 0);
   document.getElementById('abSolAmount').value = 0;
   document.getElementById('abSolUSD').value = 0;
   updateProgress();
@@ -789,8 +796,8 @@ function addCustomToken(mint, name, symbol, image, amount, usdValue, pnl) {
     name: name || 'Custom Token',
     symbol: symbol || '???',
     image: image || '',
-    amount: parseFloat(amount) || 0,
-    usdValue: parseFloat(usdValue) || 0,
+    amount: parseNum(amount),
+    usdValue: parseNum(usdValue),
     pnl: parseSignedValue(pnl)
   });
   renderCustomTokens();
@@ -833,15 +840,15 @@ function renderCustomTokens() {
       </div>
       <div class="ct-field">
         <span class="ct-field-label">Amt</span>
-        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctAmount_${t.id}" type="number" placeholder="0" value="${t.amount}" inputmode="decimal" oninput="syncCustomTokenData(${t.id}, 'amount')">
+        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctAmount_${t.id}" type="text" placeholder="0" value="${t.amount}" oninput="syncCustomTokenData(${t.id}, 'amount')">
       </div>
       <div class="ct-field">
         <span class="ct-field-label">USD</span>
-        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctUSD_${t.id}" type="number" placeholder="0" value="${t.usdValue}" inputmode="decimal" oninput="syncCustomTokenData(${t.id}, 'usdValue')">
+        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctUSD_${t.id}" type="text" placeholder="0" value="${t.usdValue}" oninput="syncCustomTokenData(${t.id}, 'usdValue')">
       </div>
       <div class="ct-field" style="margin-bottom:0">
         <span class="ct-field-label">PnL</span>
-        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctPnL_${t.id}" type="text" placeholder="0" value="${t.pnl}" inputmode="decimal" oninput="syncCustomTokenData(${t.id}, 'pnl')">
+        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctPnL_${t.id}" type="text" placeholder="0" value="${t.pnl}" oninput="syncCustomTokenData(${t.id}, 'pnl')">
       </div>`;
     c.appendChild(d);
   });
@@ -853,8 +860,8 @@ function syncCustomTokenData(id, field) {
   if (field === 'mint') t.mint = document.getElementById('ctMint_' + id)?.value || '';
   if (field === 'name') t.name = document.getElementById('ctName_' + id)?.value || 'Custom Token';
   if (field === 'symbol') t.symbol = document.getElementById('ctSymbol_' + id)?.value || '???';
-  if (field === 'amount') t.amount = parseFloat(document.getElementById('ctAmount_' + id)?.value) || 0;
-  if (field === 'usdValue') t.usdValue = parseFloat(document.getElementById('ctUSD_' + id)?.value) || 0;
+  if (field === 'amount') t.amount = parseNum(document.getElementById('ctAmount_' + id)?.value);
+  if (field === 'usdValue') t.usdValue = parseNum(document.getElementById('ctUSD_' + id)?.value);
   if (field === 'pnl') t.pnl = parseSignedValue(document.getElementById('ctPnL_' + id)?.value);
   runLivePreview();
 }
@@ -877,8 +884,8 @@ function gatherSettings() {
   const tokens = {};
   TOKENS.forEach(s => {
     tokens[s] = {
-      amount: parseFloat(document.getElementById('tb_' + s)?.value) || 0,
-      usd: parseFloat(document.getElementById('tb_' + s + '_usd')?.value) || 0,
+      amount: parseNum(document.getElementById('tb_' + s)?.value),
+      usd: parseNum(document.getElementById('tb_' + s + '_usd')?.value),
       pnl: parseSignedValue(document.getElementById('tb_' + s + '_pnl')?.value)
     };
   });
@@ -890,19 +897,19 @@ function gatherSettings() {
       displayName: document.getElementById('displayName').value
     },
     currency: document.getElementById('currency').value,
-    walletBalance: parseFloat(document.getElementById('walletBalance').value) || 0,
+    walletBalance: parseNum(document.getElementById('walletBalance').value),
     autoTotalBalance: document.getElementById('autoTotalToggle')?.classList.contains('on') ?? true,
     walletChangeUSD: parseSignedValue(document.getElementById('walletChangeUSD').value),
     walletChangePct: parseSignedValue(document.getElementById('walletChangePct').value),
     cashBalance: {
-      amount: parseFloat(document.getElementById('cashAmount').value) || 0,
+      amount: parseNum(document.getElementById('cashAmount').value),
       show: document.getElementById('cashToggle').classList.contains('on')
     },
     tokens,
     autoBalance: {
-      solAmount: parseFloat(document.getElementById('abSolAmount').value) || 0,
-      solUSD: parseFloat(document.getElementById('abSolUSD').value) || 0,
-      everyRefresh: parseInt(document.getElementById('abEvery').value) || 1,
+      solAmount: parseNum(document.getElementById('abSolAmount').value),
+      solUSD: parseNum(document.getElementById('abSolUSD').value),
+      everyRefresh: Math.max(1, parseNum(document.getElementById('abEvery').value) | 0),
       counter: abCounter
     },
     apiKey: document.getElementById('apiKey')?.value || '',
