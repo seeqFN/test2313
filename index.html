@@ -21,14 +21,14 @@
   --purple:#7c6ef7;--purple-light:#9b8fff;--purple-dim:#2d2860;
   --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
 }
-html,body{background:#000;color:var(--text);font-family:var(--font);height:100%;display:flex;justify-content:center;align-items:center;min-height:100vh}
-.phone{width:393px;height:852px;background:var(--bg);border-radius:54px;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 0 0 1px #3a3a3a,0 0 0 10px #1a1a1a,0 0 0 11px #2a2a2a,0 30px 100px rgba(0,0,0,.9)}
-.dynamic-island{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:34px;background:#000;border-radius:20px;z-index:100}
-.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding-top:58px}
+html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;height:100%;margin:0;padding:0;display:block;min-height:100dvh}
+.phone{width:100%;height:100dvh;background:var(--bg);overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:none;border-radius:0;padding-top:env(safe-area-inset-top);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+.dynamic-island{display:none}
+.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding-top:0}
 .scroll-area::-webkit-scrollbar{display:none}
-.header{display:flex;align-items:center;justify-content:space-between;padding:12px 24px 8px}
+.header{display:flex;align-items:center;justify-content:space-between;padding:16px 24px 8px;padding-top:max(16px, calc(env(safe-area-inset-top) + 4px));background:var(--bg);flex-shrink:0}
 .wallet-identity{display:flex;align-items:center;gap:12px}
-.wallet-avatar{width:44px;height:44px;border-radius:50%;background:#2a2a2a;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.wallet-avatar{width:44px;height:44px;border-radius:50%;background:#2a2a2a;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative}
 .wallet-handle{font-size:12px;color:var(--text2);font-weight:400}
 .wallet-name{font-size:20px;font-weight:700;color:var(--text);letter-spacing:-.5px;line-height:1.2}
 .header-actions{display:flex;gap:18px;align-items:center}
@@ -67,7 +67,7 @@ html,body{background:#000;color:var(--text);font-family:var(--font);height:100%;
 .token-value{font-size:16px;font-weight:600;letter-spacing:-.3px}
 .token-chg{font-size:13px;font-weight:500;margin-top:3px;color:var(--red)}
 .token-chg.neutral{color:var(--text2)}
-.bottom-nav{display:flex;align-items:center;justify-content:space-around;padding:12px 10px 30px;background:var(--bg);border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.bottom-nav{display:flex;align-items:center;justify-content:space-around;padding:12px 10px;padding-bottom:max(30px, calc(env(safe-area-inset-bottom) + 10px));background:var(--bg);border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
 .nav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;width:52px;height:44px;border-radius:12px;cursor:pointer;transition:opacity .15s,transform .1s;color:var(--text2)}
 .nav-btn.active{color:var(--purple)}
 .nav-btn:active{transform:scale(.88)}
@@ -135,7 +135,7 @@ html,body{background:#000;color:var(--text);font-family:var(--font);height:100%;
 .add-token-btn{width:100%;background:transparent;border:1.5px dashed #3a3a3a;border-radius:12px;padding:14px;font-size:14px;font-weight:600;color:var(--text2);cursor:pointer;transition:border-color .2s,color .2s,transform .1s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px}
 .add-token-btn:hover{border-color:var(--purple);color:var(--purple-light)}
 .add-token-btn:active{transform:scale(.98)}
-.s-footer{flex-shrink:0;padding:14px 20px 28px;border-top:1px solid rgba(255,255,255,.06);background:#18181b}
+.s-footer{flex-shrink:0;padding:14px 20px;padding-bottom:max(28px, calc(env(safe-area-inset-bottom) + 8px));border-top:1px solid rgba(255,255,255,.06);background:#18181b}
 .save-btn{width:100%;background:var(--purple);color:#fff;font-size:17px;font-weight:700;padding:17px;border-radius:16px;cursor:pointer;transition:background .15s,transform .1s;font-family:var(--font);letter-spacing:-.2px;border:none;outline:none}
 .save-btn:hover{background:var(--purple-light)}
 .save-btn:active{transform:scale(.97)}
@@ -154,7 +154,7 @@ html,body{background:#000;color:var(--text);font-family:var(--font);height:100%;
     <div class="header">
       <div class="wallet-identity">
         <div class="wallet-avatar" id="headerAvatar">
-          <div id="headerEmojiDisplay" style="font-size:24px;position:absolute">🤠</div>
+          <div id="headerEmojiDisplay" style="font-size:24px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;height:100%;display:flex;align-items:center;justify-content:center">🤠</div>
           <svg viewBox="0 0 40 40" fill="none" width="40" height="40" style="display:none">
             <circle cx="20" cy="20" r="20" fill="#2a2a2a"/>
             <ellipse cx="12" cy="16" rx="7" ry="5" fill="#f0c040" opacity=".9" transform="rotate(-20 12 16)"/>
