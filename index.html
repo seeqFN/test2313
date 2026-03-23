@@ -140,6 +140,10 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
 .ct-field{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .ct-field:last-child{margin-bottom:0}
 .ct-field-label{font-size:12px;color:var(--text3);min-width:28px;flex-shrink:0;font-weight:600}
+.ct-fetch-btn{background:var(--purple-dim);border:none;color:var(--purple-light);font-size:11px;font-weight:600;padding:6px 12px;border-radius:8px;cursor:pointer;transition:background .2s,transform .1s;font-family:var(--font);flex-shrink:0}
+.ct-fetch-btn:hover{background:var(--purple)}
+.ct-fetch-btn:active{transform:scale(.95)}
+.ct-fetch-btn:disabled{opacity:.5;cursor:not-allowed}
 .add-token-btn{width:100%;background:transparent;border:1.5px dashed #3a3a3a;border-radius:12px;padding:14px;font-size:14px;font-weight:600;color:var(--text2);cursor:pointer;transition:border-color .2s,color .2s,transform .1s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px}
 .add-token-btn:hover{border-color:var(--purple);color:var(--purple-light)}
 .add-token-btn:active{transform:scale(.98)}
@@ -153,14 +157,6 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
 .rip{position:absolute;border-radius:50%;background:rgba(255,255,255,.08);transform:scale(0);animation:rip .55s ease-out forwards;pointer-events:none}
 @keyframes rip{to{transform:scale(5);opacity:0}}
 
-/* ===== PULL TO REFRESH SPINNER ===== */
-.ptr-spinner{position:absolute;top:0;left:50%;transform:translateX(-50%);width:50px;height:50px;margin-top:-25px;z-index:150;opacity:0;transition:opacity .3s ease}
-.ptr-spinner.active{opacity:1}
-.ptr-spinner.refreshing{animation:none}
-.ptr-track{width:50px;height:50px;border-radius:50%;border:2.5px solid rgba(255,255,255,.15);position:relative}
-.ptr-indicator{position:absolute;inset:0;border-radius:50%;border:2.5px solid transparent;border-top-color:var(--purple);border-right-color:var(--purple);animation:ptrSpin 1s linear infinite}
-.ptr-indicator.paused{animation-play-state:paused}
-@keyframes ptrSpin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -168,11 +164,6 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
   <div class="dynamic-island"></div>
 
   <div class="scroll-area">
-    <div class="ptr-spinner" id="ptrSpinner">
-      <div class="ptr-track">
-        <div class="ptr-indicator" id="ptrIndicator"></div>
-      </div>
-    </div>
     <div class="header">
       <div class="wallet-identity">
         <div class="wallet-avatar" id="headerAvatar">
@@ -535,13 +526,11 @@ const STORAGE_KEY = 'larpzwallet_v2';
 let abCounter = 0, abTarget = 1;
 let customTokens = [];
 let currentEmoji = '🤠';
-let isRefreshing = false;
 
 window.addEventListener('DOMContentLoaded', () => { 
   loadSettings(); 
   renderCustomTokens();
   checkAndApplyAutoBalance();
-  setupPullToRefresh();
 });
 
 // ===== HELPER: Determine color class from numeric value =====
@@ -549,90 +538,6 @@ function getValueClass(value) {
   const num = parseFloat(value);
   if (isNaN(num) || num === 0) return 'neutral';
   return num > 0 ? 'positive' : 'negative';
-}
-
-// ===== iOS-STYLE PULL TO REFRESH WITH SPINNER =====
-function setupPullToRefresh() {
-  const scrollArea = document.querySelector('.scroll-area');
-  const spinner = document.getElementById('ptrSpinner');
-  const indicator = document.getElementById('ptrIndicator');
-  
-  let startY = 0, currentY = 0, pulling = false;
-  const PTR_THRESHOLD = 120; // Pull distance before refresh triggers
-  
-  scrollArea.addEventListener('touchstart', (e) => {
-    if (scrollArea.scrollTop === 0 && !isRefreshing) {
-      startY = e.touches[0].clientY;
-      pulling = true;
-      indicator.style.animationPlayState = 'paused';
-    }
-  }, { passive: true });
-  
-  scrollArea.addEventListener('touchmove', (e) => {
-    if (!pulling || scrollArea.scrollTop > 0) {
-      pulling = false;
-      return;
-    }
-    
-    currentY = e.touches[0].clientY;
-    const dist = Math.max(0, currentY - startY);
-    
-    if (dist > 0) {
-      // Smooth damped movement
-      const moveHeight = dist * 0.6;
-      scrollArea.style.transform = `translateY(${moveHeight}px)`;
-      spinner.style.marginTop = `${moveHeight - 25}px`;
-      
-      // Show spinner and update rotation based on pull
-      spinner.classList.add('active');
-      const rotation = Math.min(180, (dist / PTR_THRESHOLD) * 180);
-      indicator.style.transform = `rotate(${rotation}deg)`;
-    }
-  }, { passive: true });
-  
-  scrollArea.addEventListener('touchend', (e) => {
-    if (!pulling) return;
-    pulling = false;
-    
-    const dist = Math.max(0, currentY - startY);
-    
-    if (dist >= PTR_THRESHOLD) {
-      // Trigger refresh
-      isRefreshing = true;
-      
-      // Content stays pulled, spinner animates
-      indicator.style.transform = '';
-      indicator.style.animationPlayState = 'running';
-      
-      // Perform the auto-balance check and apply changes
-      checkAndApplyAutoBalanceWithUI();
-      
-      // After a short delay (simulating refresh), reset
-      setTimeout(() => {
-        // Smooth return to normal
-        scrollArea.style.transition = 'all 0.4s cubic-bezier(0.33, 0.66, 0.66, 1)';
-        scrollArea.style.transform = '';
-        spinner.style.marginTop = '-25px';
-        spinner.classList.remove('active');
-        
-        setTimeout(() => {
-          scrollArea.style.transition = '';
-          isRefreshing = false;
-        }, 400);
-      }, 1200);
-    } else {
-      // Not enough pull, just reset
-      scrollArea.style.transition = 'all 0.3s ease-out';
-      scrollArea.style.transform = '';
-      spinner.style.marginTop = '-25px';
-      spinner.classList.remove('active');
-      indicator.style.transform = '';
-      
-      setTimeout(() => {
-        scrollArea.style.transition = '';
-      }, 300);
-    }
-  }, { passive: true });
 }
 
 // ===== AUTO BALANCE ON REFRESH =====
@@ -681,17 +586,6 @@ function checkAndApplyAutoBalance() {
   // Save to localStorage
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
   updateProgress();
-}
-
-function checkAndApplyAutoBalanceWithUI() {
-  checkAndApplyAutoBalance();
-  
-  // Get the updated data and apply to UI
-  let data;
-  try { data = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) {}
-  if (data) {
-    applySettingsToUI(data);
-  }
 }
 
 function openSettings() {
@@ -772,21 +666,96 @@ function updateProgress() {
 }
 
 let ctIdCounter = 0;
-function addCustomToken(ca, amt, label) {
+function addCustomToken(mint, name, symbol, image, amount, usdValue, pnl) {
   ctIdCounter++;
   const id = ctIdCounter;
-  customTokens.push({ id, ca: ca || '', amt: amt || '', label: label || 'New Token' });
+  customTokens.push({
+    id,
+    mint: mint || '',
+    name: name || 'Custom Token',
+    symbol: symbol || '???',
+    image: image || '',
+    amount: amount || 0,
+    usdValue: usdValue || 0,
+    pnl: pnl || 0
+  });
   renderCustomTokens();
-  // scroll to bottom of s-body
   setTimeout(() => {
     const b = document.getElementById('sBody');
     b.scrollTop = b.scrollHeight;
   }, 50);
 }
+
 function removeCustomToken(id) {
   customTokens = customTokens.filter(t => t.id !== id);
   renderCustomTokens();
 }
+
+async function fetchTokenFromHelius(id) {
+  const mintInput = document.getElementById('ctMint_' + id);
+  const mintAddress = mintInput?.value?.trim();
+  
+  if (!mintAddress) {
+    alert('Please enter a mint address');
+    return;
+  }
+  
+  const apiKeyInput = document.getElementById('apiKey');
+  const apiKey = apiKeyInput?.value?.trim();
+  
+  if (!apiKey) {
+    alert('Please set your Helius API key in CoinGecko API section');
+    return;
+  }
+  
+  const btn = document.getElementById('ctFetch_' + id);
+  if (btn) btn.disabled = true;
+  
+  try {
+    const response = await fetch(`https://mainnet.helius-rpc.com/?api-key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'getAsset',
+        params: { id: mintAddress }
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (result.result && result.result.content) {
+      const metadata = result.result.content.metadata;
+      const image = result.result.content.links?.image || '';
+      
+      const token = customTokens.find(t => t.id === id);
+      if (token) {
+        token.mint = mintAddress;
+        token.name = metadata?.name || 'Custom Token';
+        token.symbol = metadata?.symbol || '???';
+        token.image = image;
+      }
+      
+      if (document.getElementById('ctName_' + id)) {
+        document.getElementById('ctName_' + id).value = token.name;
+      }
+      if (document.getElementById('ctSymbol_' + id)) {
+        document.getElementById('ctSymbol_' + id).value = token.symbol;
+      }
+      
+      renderCustomTokens();
+    } else {
+      alert('Token not found or invalid mint address');
+    }
+  } catch (e) {
+    console.error('Helius API error:', e);
+    alert('Error fetching token info. Check API key and mint address.');
+  }
+  
+  if (btn) btn.disabled = false;
+}
+
 function renderCustomTokens() {
   const c = document.getElementById('customTokensList');
   c.innerHTML = '';
@@ -795,30 +764,68 @@ function renderCustomTokens() {
     d.className = 'ct-card';
     d.innerHTML = `
       <div class="ct-top">
-        <span class="ct-label" id="ctl_${t.id}">${t.label}</span>
+        <span class="ct-label" id="ctl_${t.id}">${t.symbol || '???'}</span>
         <div class="ct-remove" onclick="removeCustomToken(${t.id})">
           <svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
         </div>
       </div>
       <div class="ct-field">
-        <span class="ct-field-label">CA</span>
-        <input class="s-input" style="font-size:12px;padding:10px 12px" id="ctCA_${t.id}" type="text" placeholder="Contract address..." value="${t.ca}" oninput="syncCtLabel(${t.id})">
+        <span class="ct-field-label">Mint</span>
+        <div style="flex:1;display:flex;gap:4px;align-items:center">
+          <input class="s-input" style="font-size:11px;padding:8px 10px;flex:1" id="ctMint_${t.id}" type="text" placeholder="Solana mint address" value="${t.mint}" readonly>
+          <button class="ct-fetch-btn" id="ctFetch_${t.id}" onclick="fetchTokenFromHelius(${t.id})">Fetch</button>
+        </div>
+      </div>
+      <div class="ct-field">
+        <span class="ct-field-label">Name</span>
+        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctName_${t.id}" type="text" placeholder="Token name" value="${t.name}" oninput="syncCustomTokenData(${t.id}, 'name')" readonly>
+      </div>
+      <div class="ct-field">
+        <span class="ct-field-label">Symbol</span>
+        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctSymbol_${t.id}" type="text" placeholder="Symbol" value="${t.symbol}" oninput="syncCustomTokenData(${t.id}, 'symbol')" readonly>
       </div>
       <div class="ct-field">
         <span class="ct-field-label">Amt</span>
-        <input class="s-input" style="font-size:12px;padding:10px 12px" id="ctAmt_${t.id}" type="number" placeholder="0" value="${t.amt}" inputmode="decimal">
+        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctAmount_${t.id}" type="number" placeholder="0" value="${t.amount}" inputmode="decimal" oninput="syncCustomTokenData(${t.id}, 'amount')">
+      </div>
+      <div class="ct-field">
+        <span class="ct-field-label">USD</span>
+        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctUSD_${t.id}" type="number" placeholder="0" value="${t.usdValue}" inputmode="decimal" oninput="syncCustomTokenData(${t.id}, 'usdValue')">
+      </div>
+      <div class="ct-field" style="margin-bottom:0">
+        <span class="ct-field-label">PnL</span>
+        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctPnL_${t.id}" type="number" placeholder="0" value="${t.pnl}" inputmode="decimal" oninput="syncCustomTokenData(${t.id}, 'pnl')">
       </div>`;
     c.appendChild(d);
   });
 }
-function syncCtLabel(id) {
-  const ca = document.getElementById('ctCA_' + id)?.value || '';
-  const t = customTokens.find(x => x.id === id);
-  const label = ca.length > 8 ? ca.slice(0,8) + '...' : (ca || 'New Token');
-  if (t) t.label = label;
-  const el = document.getElementById('ctl_' + id);
-  if (el) el.textContent = label;
+
+function syncCustomTokenData(id, field) {
+  const token = customTokens.find(t => t.id === id);
+  if (!token) return;
+  
+  switch(field) {
+    case 'mint':
+      token.mint = document.getElementById('ctMint_' + id)?.value || '';
+      break;
+    case 'name':
+      token.name = document.getElementById('ctName_' + id)?.value || 'Custom Token';
+      break;
+    case 'symbol':
+      token.symbol = document.getElementById('ctSymbol_' + id)?.value || '???';
+      break;
+    case 'amount':
+      token.amount = parseFloat(document.getElementById('ctAmount_' + id)?.value) || 0;
+      break;
+    case 'usdValue':
+      token.usdValue = parseFloat(document.getElementById('ctUSD_' + id)?.value) || 0;
+      break;
+    case 'pnl':
+      token.pnl = parseFloat(document.getElementById('ctPnL_' + id)?.value) || 0;
+      break;
+  }
 }
+
 
 function gatherSettings() {
   const tokens = {};
@@ -833,9 +840,13 @@ function gatherSettings() {
     };
   });
   const ct = customTokens.map(t => ({
-    label: t.label,
-    ca: document.getElementById('ctCA_' + t.id)?.value || t.ca,
-    amt: parseFloat(document.getElementById('ctAmt_' + t.id)?.value) || 0
+    mint: t.mint,
+    name: t.name,
+    symbol: t.symbol,
+    image: t.image,
+    amount: t.amount,
+    usdValue: t.usdValue,
+    pnl: t.pnl
   }));
   return {
     profile: { emoji: currentEmoji, username: document.getElementById('username').value, displayName: document.getElementById('displayName').value },
@@ -849,12 +860,6 @@ function gatherSettings() {
 }
 
 function saveSettings() {
-  customTokens.forEach(t => {
-    const ca = document.getElementById('ctCA_' + t.id)?.value;
-    const amt = document.getElementById('ctAmt_' + t.id)?.value;
-    if (ca !== undefined) t.ca = ca;
-    if (amt !== undefined) t.amt = amt;
-  });
   const data = gatherSettings();
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
   console.log('Settings:', data);
@@ -909,7 +914,20 @@ function loadSettings() {
   }
   if (data.apiKey !== undefined) document.getElementById('apiKey').value = data.apiKey;
   if (data.customTokens?.length) {
-    data.customTokens.forEach(t => { ctIdCounter++; customTokens.push({ id: ctIdCounter, ca: t.ca, amt: t.amt, label: t.label || 'Token' }); });
+    data.customTokens.forEach(t => {
+      ctIdCounter++;
+      const newToken = {
+        id: ctIdCounter,
+        mint: t.mint || '',
+        name: t.name || '',
+        symbol: t.symbol || '',
+        image: t.image || '',
+        amount: t.amount !== undefined ? t.amount : 0,
+        usdValue: t.usdValue !== undefined ? t.usdValue : 0,
+        pnl: t.pnl !== undefined ? t.pnl : 0
+      };
+      customTokens.push(newToken);
+    });
     renderCustomTokens();
   }
   
@@ -1037,6 +1055,57 @@ function applySettingsToUI(data) {
           }
         }
       }
+    });
+  }
+  
+  // Render custom tokens to main token list
+  if (customTokens && customTokens.length > 0) {
+    const tokenList = document.querySelector('.token-list');
+    
+    // Remove existing custom token cards (those with data-custom-id)
+    tokenList.querySelectorAll('[data-custom-id]').forEach(el => el.remove());
+    
+    // Render each custom token
+    customTokens.forEach(token => {
+      const amount = parseFloat(token.amount) || 0;
+      
+      // Hide/show based on amount <= 0
+      if (amount <= 0) return;
+      
+      const card = document.createElement('div');
+      card.className = 'token-card';
+      card.setAttribute('data-custom-id', token.id);
+      card.setAttribute('onclick', 'rippleEl(event,this)');
+      
+      // Icon - use image from Helius or fallback
+      let iconHTML;
+      if (token.image && token.image.trim()) {
+        iconHTML = `<img src="${token.image}" alt="${token.symbol}" style="width:50px;height:50px;border-radius:25px;object-fit:cover;" onerror="this.src='data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2050%2050%22%3E%3Ccircle%20cx=%2225%22%20cy=%2225%22%20r=%2225%22%20fill=%22%239333ea%22/%3E%3Ctext%20x=%2250%25%22%20y=%2256%25%22%20text-anchor=%22middle%22%20dominant-baseline=%22middle%22%20font-size=%2224%22%20font-weight=%22900%22%20fill=%22white%22%20font-family=%22Arial%22%3E%3F%3C/text%3E%3C/svg%3E'">`;
+      } else {
+        // Fallback icon - purple circle with ?
+        iconHTML = `<svg width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="25" fill="#9333ea"/><text x="50%" y="56%" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="900" fill="white" font-family="Arial">?</text></svg>`;
+      }
+      
+      const pnlValue = parseFloat(token.pnl) || 0;
+      const pnlClass = getValueClass(pnlValue);
+      const usdValue = parseFloat(token.usdValue) || 0;
+      
+      card.innerHTML = `
+        <div class="rh"></div>
+        <div class="token-icon">${iconHTML}</div>
+        <div class="token-mid">
+          <div class="token-name-row">
+            <span class="token-name">${token.name || 'Unknown'}</span>
+          </div>
+          <div class="token-qty">${amount.toLocaleString('en-US', {maximumFractionDigits:6})} ${token.symbol || 'TOKEN'}</div>
+        </div>
+        <div class="token-right">
+          <div class="token-value">$${usdValue.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
+          <div class="token-chg ${pnlClass}">${pnlValue >= 0 ? '+' : ''}$${pnlValue.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
+        </div>
+      `;
+      
+      tokenList.appendChild(card);
     });
   }
 }
