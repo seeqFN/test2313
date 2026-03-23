@@ -316,31 +316,6 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
 
   <div class="save-toast" id="saveToast">✓ Settings saved</div>
 
-  <div class="tx-modal" id="txModal" onclick="closeTxGenerator(event)">
-    <div class="tx-card" onclick="event.stopPropagation()">
-      <div class="tx-title">Transaction Generator</div>
-      <div class="s-row">
-        <span class="s-row-label">Type</span>
-        <select class="s-select" id="txType"><option value="Received">Received</option><option value="Sent">Sent</option></select>
-      </div>
-      <div class="s-row">
-        <span class="s-row-label">Token</span>
-        <select class="s-select" id="txToken"><option>SOL</option><option>ETH</option><option>BTC</option><option>MON</option><option>USDT</option><option>USDC</option></select>
-      </div>
-      <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="txAmount" type="number" inputmode="decimal" value="1"></div>
-      <div class="s-row"><span class="s-row-label">Date</span><input class="s-input" id="txDate" type="datetime-local"></div>
-      <div class="s-row"><span class="s-row-label">From</span><input class="s-input" id="txFrom" type="text" placeholder="Wallet address"></div>
-      <div class="u-row">
-        <button class="u-btn" onclick="randomizeTxAddress()">Randomize Address</button>
-        <button class="u-btn primary" onclick="previewTx()">Preview Transaction</button>
-      </div>
-      <div class="tx-preview" id="txPreview" style="display:none"></div>
-      <div class="u-row" style="margin-top:10px">
-        <button class="tx-close" onclick="closeTxGenerator()">Close</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Settings Overlay -->
   <div class="s-overlay" id="sOverlay" onclick="handleOverlayClick(event)">
     <div class="s-sheet" id="sSheet" onclick="event.stopPropagation()">
@@ -352,13 +327,7 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
         </div>
       </div>
 
-      <div class="settings-tabs">
-        <button class="s-tab-btn active" id="tabSettingsBtn" onclick="switchSettingsTab('settings')">Settings</button>
-        <button class="s-tab-btn" id="tabUtilitiesBtn" onclick="switchSettingsTab('utilities')">Utilities</button>
-      </div>
-
       <div class="s-body" id="sBody">
-      <div class="s-tab-panel active" id="settingsPanel">
 
         <!-- PROFILE -->
         <div class="s-section">
@@ -605,62 +574,6 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
         <div style="height:10px"></div>
       </div>
 
-      <div class="s-tab-panel" id="utilitiesPanel">
-        <div class="s-section">
-          <div class="s-section-label">Auto Balance Utility</div>
-          <div class="u-grid" id="utilityTokenGrid">
-            <label class="u-chip"><input type="checkbox" id="utilTok_SOL" checked> SOL</label>
-            <label class="u-chip"><input type="checkbox" id="utilTok_ETH"> ETH</label>
-            <label class="u-chip"><input type="checkbox" id="utilTok_BTC"> BTC</label>
-            <label class="u-chip"><input type="checkbox" id="utilTok_MON"> MON</label>
-          </div>
-          <div class="u-row" style="margin-top:10px">
-            <input class="s-input" id="utilMin" type="number" inputmode="decimal" placeholder="Min" value="1">
-            <input class="s-input" id="utilMax" type="number" inputmode="decimal" placeholder="Max" value="10">
-          </div>
-          <div class="u-row">
-            <input class="s-input" id="utilFixed" type="number" inputmode="decimal" placeholder="Fixed amount" value="5">
-            <input class="s-input" id="utilInterval" type="number" inputmode="decimal" placeholder="Interval sec" value="8">
-          </div>
-          <div class="s-row">
-            <span class="s-row-label">Mode</span>
-            <select class="s-select" id="utilMode">
-              <option value="manual">Manual</option>
-              <option value="auto">Auto</option>
-              <option value="random">Random</option>
-              <option value="fixed">Fixed</option>
-            </select>
-          </div>
-          <div class="u-row">
-            <button class="u-btn" onclick="runUtilityOnce()">Manual Trigger</button>
-            <button class="u-btn primary" onclick="startUtilityAuto()">Start Auto</button>
-            <button class="u-btn danger" onclick="stopUtilityAuto()">Stop Auto</button>
-          </div>
-          <div class="u-status" id="utilityStatus">Stopped</div>
-        </div>
-
-        <div class="s-section">
-          <div class="s-section-label">Transaction Generator</div>
-          <div class="u-row">
-            <button class="u-btn primary" onclick="openTxGenerator()">Open Generator</button>
-          </div>
-          <div class="tx-list" id="txList"></div>
-        </div>
-
-        <div class="s-section">
-          <div class="s-section-label">Push Notifications</div>
-          <div class="u-row">
-            <button class="u-btn" onclick="requestPushPermission()">Request Permission</button>
-            <button class="u-btn primary" onclick="subscribeToPush()">Enable Push</button>
-          </div>
-          <div class="u-status" id="pushPermissionStatus">Permission: unknown</div>
-          <div class="u-status" id="pushSubscriptionStatus">Subscription: unknown</div>
-        </div>
-
-        <div style="height:10px"></div>
-      </div>
-      </div>
-
       <div class="s-footer">
         <button class="save-btn" onclick="saveSettings()">Save</button>
       </div>
@@ -672,14 +585,11 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
 <script>
 const STORAGE_KEY = 'larpzwallet_v2';
 const TOKENS = ['SOL','ETH','BTC','MON','SUI','POL','HYPE','USDT','USDC'];
-const tokenApproxPrice = { SOL: 160, ETH: 3500, BTC: 65000, MON: 1.25, SUI: 1.2, POL: 0.9, HYPE: 3.1, USDT: 1, USDC: 1 };
 let abCounter = 0;
 let abTarget = 1;
 let customTokens = [];
 let currentEmoji = '🤠';
 let ctIdCounter = 0;
-let utilityTimer = null;
-let txHistory = [];
 
 window.addEventListener('DOMContentLoaded', async () => {
   wireSheetSwipe();
@@ -687,12 +597,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   loadSettings();
   renderCustomTokens();
   checkAndApplyAutoBalance();
-  renderTxHistory();
   updateProgress();
-  await setupPush();
-  updatePushStatus();
-  const txDate = document.getElementById('txDate');
-  if (txDate && !txDate.value) txDate.value = new Date().toISOString().slice(0,16);
 });
 
 function parseSignedValue(val) {
@@ -724,14 +629,6 @@ function showCtMessage(message, type) {
   el.textContent = message || '';
 }
 
-function switchSettingsTab(tab) {
-  const isSettings = tab === 'settings';
-  document.getElementById('settingsPanel')?.classList.toggle('active', isSettings);
-  document.getElementById('utilitiesPanel')?.classList.toggle('active', !isSettings);
-  document.getElementById('tabSettingsBtn')?.classList.toggle('active', isSettings);
-  document.getElementById('tabUtilitiesBtn')?.classList.toggle('active', !isSettings);
-}
-
 function openSettings() {
   document.getElementById('sOverlay').classList.add('active');
   document.getElementById('sSheet').classList.add('active');
@@ -748,22 +645,48 @@ function handleOverlayClick(e) {
 }
 
 function wireSheetSwipe() {
-  let ty = 0;
+  let startY = 0;
+  let dragging = false;
+  let deltaY = 0;
+  const CLOSE_THRESHOLD = 130;
   const ss = document.getElementById('sSheet');
-  if (!ss) return;
-  ss.addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
-  ss.addEventListener('touchmove', e => {
-    const d = e.touches[0].clientY - ty;
-    if (d > 0) {
-      ss.style.transition = 'none';
-      ss.style.transform = `translateY(${Math.min(d, 220)}px)`;
+  const handle = ss?.querySelector('.s-handle');
+  if (!ss || !handle) return;
+
+  const onStart = (e) => {
+    if (!document.getElementById('sSheet')?.classList.contains('active')) return;
+    dragging = true;
+    startY = e.touches[0].clientY;
+    deltaY = 0;
+    ss.style.transition = 'none';
+  };
+
+  const onMove = (e) => {
+    if (!dragging) return;
+    deltaY = Math.max(0, e.touches[0].clientY - startY);
+    if (deltaY > 0) e.preventDefault();
+    ss.style.transform = `translateY(${Math.min(deltaY, 260)}px)`;
+  };
+
+  const onEnd = () => {
+    if (!dragging) return;
+    dragging = false;
+    ss.style.transition = 'transform .25s cubic-bezier(.32,.72,0,1)';
+    if (deltaY > CLOSE_THRESHOLD) {
+      ss.style.transform = '';
+      closeSettings();
+    } else {
+      ss.style.transform = 'translateY(0)';
+      setTimeout(() => {
+        if (document.getElementById('sSheet')?.classList.contains('active')) ss.style.transform = '';
+      }, 250);
     }
-  }, { passive: true });
-  ss.addEventListener('touchend', e => {
-    ss.style.transition = '';
-    ss.style.transform = '';
-    if (e.changedTouches[0].clientY - ty > 80) closeSettings();
-  });
+  };
+
+  handle.addEventListener('touchstart', onStart, { passive: true });
+  handle.addEventListener('touchmove', onMove, { passive: false });
+  handle.addEventListener('touchend', onEnd, { passive: true });
+  handle.addEventListener('touchcancel', onEnd, { passive: true });
 }
 
 function toggleEmojiPicker(e) {
@@ -982,23 +905,9 @@ function gatherSettings() {
       everyRefresh: parseInt(document.getElementById('abEvery').value) || 1,
       counter: abCounter
     },
-    utility: {
-      mode: document.getElementById('utilMode')?.value || 'manual',
-      min: parseFloat(document.getElementById('utilMin')?.value) || 0,
-      max: parseFloat(document.getElementById('utilMax')?.value) || 0,
-      fixed: parseFloat(document.getElementById('utilFixed')?.value) || 0,
-      interval: parseFloat(document.getElementById('utilInterval')?.value) || 5,
-      tokens: {
-        SOL: !!document.getElementById('utilTok_SOL')?.checked,
-        ETH: !!document.getElementById('utilTok_ETH')?.checked,
-        BTC: !!document.getElementById('utilTok_BTC')?.checked,
-        MON: !!document.getElementById('utilTok_MON')?.checked
-      }
-    },
     apiKey: document.getElementById('apiKey')?.value || '',
     heliusApiKey: document.getElementById('heliusApiKey')?.value || '',
-    customTokens: customTokens.map(t => ({ ...t })),
-    transactions: txHistory
+    customTokens: customTokens.map(t => ({ ...t }))
   };
 }
 
@@ -1088,23 +997,7 @@ function loadSettings() {
     });
   }
 
-  if (data.utility) {
-    document.getElementById('utilMode').value = data.utility.mode || 'manual';
-    document.getElementById('utilMin').value = data.utility.min ?? 0;
-    document.getElementById('utilMax').value = data.utility.max ?? 0;
-    document.getElementById('utilFixed').value = data.utility.fixed ?? 0;
-    document.getElementById('utilInterval').value = data.utility.interval ?? 8;
-    if (data.utility.tokens) {
-      ['SOL','ETH','BTC','MON'].forEach(k => {
-        const el = document.getElementById('utilTok_' + k);
-        if (el) el.checked = !!data.utility.tokens[k];
-      });
-    }
-  }
-
-  txHistory = Array.isArray(data.transactions) ? data.transactions : [];
   renderCustomTokens();
-  renderTxHistory();
   updateProgress();
   applySettingsToUI(data);
 }
@@ -1240,282 +1133,11 @@ function wireLivePreview() {
   if (!body) return;
   body.addEventListener('input', e => {
     const id = e.target?.id || '';
-    if (id.startsWith('ct') || id.startsWith('tb_') || id === 'cashAmount' || id.startsWith('wallet') || id.startsWith('util')) {
+    if (id.startsWith('ct') || id.startsWith('tb_') || id === 'cashAmount' || id.startsWith('wallet')) {
       runLivePreview();
     }
   });
   body.addEventListener('change', runLivePreview);
-}
-
-function selectedUtilityTokens() {
-  return ['SOL','ETH','BTC','MON'].filter(t => document.getElementById('utilTok_' + t)?.checked);
-}
-
-function computeUtilityAmount() {
-  const mode = document.getElementById('utilMode').value;
-  const min = parseFloat(document.getElementById('utilMin').value) || 0;
-  const max = parseFloat(document.getElementById('utilMax').value) || 0;
-  const fixed = parseFloat(document.getElementById('utilFixed').value) || 0;
-  if (mode === 'fixed') return fixed;
-  if (mode === 'random' || mode === 'auto') {
-    const lo = Math.min(min, max);
-    const hi = Math.max(min, max);
-    return lo + Math.random() * (hi - lo);
-  }
-  return fixed;
-}
-
-function applyUtilityUpdate() {
-  const tokens = selectedUtilityTokens();
-  if (!tokens.length) return;
-  const amount = computeUtilityAmount();
-  tokens.forEach(sym => {
-    const amountEl = document.getElementById('tb_' + sym);
-    const usdEl = document.getElementById('tb_' + sym + '_usd');
-    if (!amountEl || !usdEl) return;
-    amountEl.value = amount.toFixed(6);
-    usdEl.value = (amount * (tokenApproxPrice[sym] || 0)).toFixed(2);
-  });
-  runLivePreview();
-  saveSettings();
-}
-
-function runUtilityOnce() {
-  const mode = document.getElementById('utilMode').value;
-  if (mode === 'manual' || mode === 'random' || mode === 'fixed') {
-    applyUtilityUpdate();
-    document.getElementById('utilityStatus').textContent = 'Updated once.';
-  }
-}
-
-function startUtilityAuto() {
-  stopUtilityAuto();
-  const sec = Math.max(1, parseFloat(document.getElementById('utilInterval').value) || 5);
-  utilityTimer = setInterval(applyUtilityUpdate, sec * 1000);
-  document.getElementById('utilityStatus').textContent = `Running every ${sec}s`;
-}
-
-function stopUtilityAuto() {
-  if (utilityTimer) clearInterval(utilityTimer);
-  utilityTimer = null;
-  document.getElementById('utilityStatus').textContent = 'Stopped';
-}
-
-function randomAddress() {
-  const alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-  let out = '';
-  for (let i = 0; i < 44; i++) out += alphabet[Math.floor(Math.random() * alphabet.length)];
-  return out;
-}
-
-function txTokenIcon(token) {
-  const map = { SOL: '◎', ETH: '◆', BTC: '₿', MON: '◉', USDT: 'T', USDC: '$' };
-  return `<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:11px;background:#2d2f39;color:#fff;font-size:12px">${map[token] || '?'}</span>`;
-}
-
-function openTxGenerator() {
-  document.getElementById('txModal').classList.add('active');
-}
-
-function closeTxGenerator(e) {
-  if (e && e.target && e.target.id !== 'txModal') return;
-  document.getElementById('txModal').classList.remove('active');
-}
-
-function randomizeTxAddress() {
-  document.getElementById('txFrom').value = randomAddress();
-}
-
-function previewTx() {
-  const type = document.getElementById('txType').value;
-  const token = document.getElementById('txToken').value;
-  const amount = parseFloat(document.getElementById('txAmount').value) || 0;
-  const date = document.getElementById('txDate').value || new Date().toISOString();
-  const from = document.getElementById('txFrom').value || randomAddress();
-  const positive = type === 'Received';
-  const preview = document.getElementById('txPreview');
-  preview.style.display = 'block';
-  preview.innerHTML = `
-    <div class="tx-preview-row"><strong>Status</strong><span>succeeded</span></div>
-    <div class="tx-preview-row"><strong>Type</strong><span>${type}</span></div>
-    <div class="tx-preview-row"><strong>Token</strong><span style="display:inline-flex;align-items:center;gap:8px">${txTokenIcon(token)} ${token}</span></div>
-    <div class="tx-preview-row"><strong>Amount</strong><span class="tx-amt ${positive ? 'pos' : 'neg'}">${positive ? '+' : '-'}${amount} ${token}</span></div>
-    <div class="tx-preview-row"><strong>Date</strong><span>${new Date(date).toLocaleString()}</span></div>
-    <div class="tx-preview-row"><strong>From</strong><span style="word-break:break-all">${from}</span></div>
-  `;
-  txHistory.unshift({ type, token, amount, date, from, status: 'succeeded' });
-  txHistory = txHistory.slice(0, 30);
-  renderTxHistory();
-  saveSettings();
-}
-
-function renderTxHistory() {
-  const list = document.getElementById('txList');
-  if (!list) return;
-  list.innerHTML = '';
-  txHistory.forEach(tx => {
-    const el = document.createElement('div');
-    el.className = 'tx-item';
-    const pos = tx.type === 'Received';
-    el.innerHTML = `
-      <div class="tx-item-top">
-        <strong>${tx.type} ${tx.token}</strong>
-        <span class="tx-amt ${pos ? 'pos' : 'neg'}">${pos ? '+' : '-'}${parseFloat(tx.amount) || 0}</span>
-      </div>
-      <div class="tx-meta">${new Date(tx.date).toLocaleString()} • ${tx.status}</div>
-      <div class="tx-meta">${tx.from}</div>
-    `;
-    list.appendChild(el);
-  });
-}
-
-let swRegistration = null;
-const PUSH_SUB_STORAGE_KEY = 'larpzwallet_push_subscription_v1';
-const VAPID_PUBLIC_KEY = 'BJGFylMnTU9r_pmCeMdUPbMtmgybtqKgZADgGj0FufmxgLbYXVwry7QjAxRk-Jo4PBpTbQoRoThaaW0r8v7Q98w';
-
-function isIOS() {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-}
-
-function isStandaloneMode() {
-  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-}
-
-function setPushSubscriptionStatus(message) {
-  const subEl = document.getElementById('pushSubscriptionStatus');
-  if (subEl) subEl.textContent = 'Subscription: ' + message;
-}
-
-async function setupPush() {
-  console.log('[Push] Notification permission status:', ('Notification' in window) ? Notification.permission : 'unsupported');
-  console.log('[Push] PushManager available:', 'PushManager' in window);
-  if (!('serviceWorker' in navigator)) {
-    console.warn('[Push] Service Worker not supported in this browser');
-    return;
-  }
-  try {
-    swRegistration = await navigator.serviceWorker.register('/service-worker.js');
-    console.log('[Push] Service worker registered:', swRegistration.scope);
-    swRegistration = await navigator.serviceWorker.ready;
-    console.log('[Push] Service worker ready');
-  } catch (e) {
-    console.error('[Push] Service worker registration failed:', e);
-  }
-}
-
-function updatePushStatus() {
-  const perm = ('Notification' in window) ? Notification.permission : 'unsupported';
-  const permEl = document.getElementById('pushPermissionStatus');
-  if (permEl) permEl.textContent = 'Permission: ' + perm;
-  if (!('PushManager' in window)) {
-    setPushSubscriptionStatus('PushManager not supported');
-    return;
-  }
-  if (isIOS() && !isStandaloneMode()) {
-    setPushSubscriptionStatus('Open from Home Screen (A2HS) on iPhone');
-    return;
-  }
-  if (!swRegistration) {
-    setPushSubscriptionStatus('service worker not ready');
-    return;
-  }
-  swRegistration.pushManager.getSubscription().then(sub => {
-    if (sub) {
-      try { localStorage.setItem(PUSH_SUB_STORAGE_KEY, JSON.stringify(sub.toJSON())); } catch (e) {}
-      setPushSubscriptionStatus('active');
-    } else {
-      const stored = localStorage.getItem(PUSH_SUB_STORAGE_KEY);
-      setPushSubscriptionStatus(stored ? 'not active (cached debug exists)' : 'not subscribed');
-    }
-  }).catch((e) => {
-    console.error('[Push] Failed to read subscription:', e);
-    setPushSubscriptionStatus('error: ' + (e?.message || String(e)));
-  });
-}
-
-async function requestPushPermission() {
-  if (!('Notification' in window)) {
-    console.warn('[Push] Notification API not supported');
-    return;
-  }
-  const result = await Notification.requestPermission();
-  console.log('[Push] Notification permission status:', result);
-  updatePushStatus();
-}
-
-function urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-  const rawData = atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-  for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
-  return outputArray;
-}
-
-async function subscribeToPush() {
-  if (!('PushManager' in window)) {
-    setPushSubscriptionStatus('PushManager not supported in this browser');
-    console.warn('[Push] PushManager not supported');
-    return;
-  }
-  if (isIOS() && !isStandaloneMode()) {
-    setPushSubscriptionStatus('iPhone requires Home Screen app mode');
-    console.warn('[Push] iOS push attempted outside standalone mode');
-    return;
-  }
-  if (!('Notification' in window) || Notification.permission !== 'granted') {
-    setPushSubscriptionStatus('notification permission not granted');
-    console.warn('[Push] Notification permission is not granted:', ('Notification' in window) ? Notification.permission : 'unsupported');
-    return;
-  }
-  if (!VAPID_PUBLIC_KEY || VAPID_PUBLIC_KEY.startsWith('REPLACE_')) {
-    setPushSubscriptionStatus('missing VAPID public key');
-    console.warn('[Push] Missing real VAPID public key');
-    return;
-  }
-  if (!swRegistration) {
-    await setupPush();
-  }
-  if (!swRegistration) {
-    setPushSubscriptionStatus('service worker registration unavailable');
-    updatePushStatus();
-    return;
-  }
-  try {
-    let sub = await swRegistration.pushManager.getSubscription();
-    if (!sub) {
-      sub = await swRegistration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-      });
-    }
-    const subscriptionJson = sub.toJSON();
-    try { localStorage.setItem(PUSH_SUB_STORAGE_KEY, JSON.stringify(subscriptionJson)); } catch (e) {}
-    console.log('[Push] Subscribe success:', subscriptionJson);
-    await sendSubscriptionToBackend(sub);
-    setPushSubscriptionStatus('active');
-    updatePushStatus();
-  } catch (e) {
-    console.error('[Push] Subscribe failed:', e);
-    setPushSubscriptionStatus('error: ' + (e?.message || String(e)));
-    updatePushStatus();
-  }
-}
-
-async function sendSubscriptionToBackend(subscription) {
-  const endpoint = '/api/save-subscription';
-  try {
-    const payload = subscription.toJSON ? subscription.toJSON() : subscription;
-    await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ subscription: payload })
-    });
-    console.log('[Push] Subscription sent to backend:', endpoint);
-  } catch (e) {
-    console.error('[Push] Failed sending subscription to backend:', e);
-    throw e;
-  }
 }
 
 function rippleEl(e, el) {
