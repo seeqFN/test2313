@@ -19,7 +19,7 @@
   --border:#303030;--text:#ffffff;--text2:#aaaaaa;--text3:#666666;
   --red:#ef4444;--red-bg:#c0392b;
   --purple:#7c6ef7;--purple-light:#9b8fff;--purple-dim:#2d2860;
-  --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text',sans-serif;
 }
 html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;height:100%;margin:0;padding:0;display:block;min-height:100dvh}
 .phone{width:100%;height:100dvh;background:var(--bg);overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:none;border-radius:0;padding-top:env(safe-area-inset-top);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
@@ -35,10 +35,10 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
 .hdr-btn{cursor:pointer;color:var(--text);display:flex;align-items:center;justify-content:center;transition:opacity .15s}
 .hdr-btn:active{opacity:.6}
 .balance-section{padding:18px 24px 0}
-.balance-amount{font-size:44px;font-weight:800;letter-spacing:-2px;line-height:1;color:#fff}
+.balance-amount{font-size:44px;font-weight:700;letter-spacing:-1.5px;line-height:1;color:#fff;-webkit-font-smoothing:antialiased}
 .balance-change{display:flex;align-items:center;gap:10px;margin-top:8px}
-.change-usd{font-size:16px;font-weight:600;color:var(--red)}
-.change-pct{background:var(--red-bg);color:#fff;font-size:13px;font-weight:700;padding:3px 10px;border-radius:6px}
+.change-usd{font-size:16px;font-weight:500;letter-spacing:-0.4px;color:var(--red)}
+.change-pct{background:var(--red-bg);color:#fff;font-size:13px;font-weight:600;letter-spacing:-0.2px;padding:4px 11px;border-radius:6px}
 .actions-row{display:flex;gap:12px;padding:24px 20px 0}
 .action-btn{flex:1;background:var(--surface);border-radius:16px;padding:18px 8px 14px;display:flex;flex-direction:column;align-items:center;gap:9px;cursor:pointer;transition:background .15s,transform .1s;color:var(--text);user-select:none;position:relative;overflow:hidden}
 .action-btn:hover{background:var(--surface2)}
@@ -60,12 +60,12 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
 .token-icon{width:50px;height:50px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .token-mid{flex:1;min-width:0}
 .token-name-row{display:flex;align-items:center;gap:5px}
-.token-name{font-size:16px;font-weight:600;letter-spacing:-.2px}
+.token-name{font-size:16px;font-weight:500;letter-spacing:-.3px}
 .verified{color:var(--purple);display:flex;align-items:center}
-.token-qty{font-size:13px;color:var(--text2);margin-top:3px}
+.token-qty{font-size:13px;color:var(--text2);margin-top:3px;font-weight:400;letter-spacing:-0.2px}
 .token-right{text-align:right;flex-shrink:0}
-.token-value{font-size:16px;font-weight:600;letter-spacing:-.3px}
-.token-chg{font-size:13px;font-weight:500;margin-top:3px;color:var(--red)}
+.token-value{font-size:16px;font-weight:500;letter-spacing:-.3px}
+.token-chg{font-size:13px;font-weight:400;margin-top:3px;color:var(--red);letter-spacing:-0.2px}
 .token-chg.positive{color:#22c55e}
 .token-chg.negative{color:var(--red)}
 .token-chg.neutral{color:var(--text2)}
@@ -76,7 +76,7 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
 .change-pct.negative{background:var(--red-bg);color:#fff}
 .change-pct.neutral{background:#3a3a3a;color:#ccc}
 .bottom-nav{display:flex;align-items:center;justify-content:space-around;padding:12px 10px;padding-bottom:max(30px, calc(env(safe-area-inset-bottom) + 10px));background:var(--bg);border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
-.nav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;width:52px;height:44px;border-radius:12px;cursor:pointer;transition:opacity .15s,transform .1s;color:var(--text2)}
+.nav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;width:52px;height:44px;border-radius:12px;cursor:pointer;transition:opacity .15s,transform .1s;color:var(--text2);font-size:11px;font-weight:500;margin-top:4px}
 .nav-btn.active{color:var(--purple)}
 .nav-btn:active{transform:scale(.88)}
 
@@ -354,6 +354,23 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
               <option value="CHF">CHF</option>
               <option value="BTC">₿ BTC</option>
             </select>
+          </div>
+        </div>
+
+        <!-- WALLET BALANCE -->
+        <div class="s-section">
+          <div class="s-section-label">Wallet Balance</div>
+          <div class="s-row">
+            <span class="s-row-label">Amount</span>
+            <input class="s-input" id="walletBalance" type="number" placeholder="0" value="1745385.83" inputmode="decimal">
+          </div>
+          <div class="s-row">
+            <span class="s-row-label">USD Change</span>
+            <input class="s-input" id="walletChangeUSD" type="text" placeholder="-1000" value="-22749.13" inputmode="decimal">
+          </div>
+          <div class="s-row" style="margin-bottom:0">
+            <span class="s-row-label">% Change</span>
+            <input class="s-input" id="walletChangePct" type="text" placeholder="-1.30%" value="-1.30" inputmode="decimal">
           </div>
         </div>
 
@@ -855,11 +872,16 @@ function syncCustomTokenData(id, field) {
       token.usdValue = parseFloat(document.getElementById('ctUSD_' + id)?.value) || 0;
       break;
     case 'pnl':
-      token.pnl = parseFloat(document.getElementById('ctPnL_' + id)?.value) || 0;
+      token.pnl = parseSignedValue(document.getElementById('ctPnL_' + id)?.value);
       break;
   }
 }
 
+// Helper: Parse signed values (positive/negative) from text input
+function parseSignedValue(val) {
+  if (!val) return 0;
+  return parseFloat(val.toString().trim()) || 0;
+}
 
 function gatherSettings() {
   const tokens = {};
@@ -885,6 +907,9 @@ function gatherSettings() {
   return {
     profile: { emoji: currentEmoji, username: document.getElementById('username').value, displayName: document.getElementById('displayName').value },
     currency: document.getElementById('currency').value,
+    walletBalance: parseFloat(document.getElementById('walletBalance').value) || 0,
+    walletChangeUSD: parseSignedValue(document.getElementById('walletChangeUSD').value),
+    walletChangePct: parseSignedValue(document.getElementById('walletChangePct').value),
     cashBalance: { amount: parseFloat(document.getElementById('cashAmount').value) || 0, show: document.getElementById('cashToggle').classList.contains('on') },
     tokens,
     autoBalance: { solAmount: parseFloat(document.getElementById('abSolAmount').value) || 0, solUSD: parseFloat(document.getElementById('abSolUSD').value) || 0, everyRefresh: parseInt(document.getElementById('abEvery').value) || 1, counter: abCounter },
@@ -916,6 +941,9 @@ function loadSettings() {
     if (data.profile.displayName !== undefined) document.getElementById('displayName').value = data.profile.displayName;
   }
   if (data.currency) document.getElementById('currency').value = data.currency;
+  if (data.walletBalance !== undefined) document.getElementById('walletBalance').value = data.walletBalance;
+  if (data.walletChangeUSD !== undefined) document.getElementById('walletChangeUSD').value = data.walletChangeUSD;
+  if (data.walletChangePct !== undefined) document.getElementById('walletChangePct').value = data.walletChangePct;
   if (data.cashBalance) {
     document.getElementById('cashAmount').value = data.cashBalance.amount ?? 0;
     if (data.cashBalance.show) { document.getElementById('cashToggle').classList.add('on'); document.getElementById('cashToggleLabel').textContent = 'Visible'; }
@@ -984,41 +1012,31 @@ function applySettingsToUI(data) {
     }
   }
   
-  // Apply main balance change with dynamic colors
-  if (data.tokens) {
-    // Calculate total balance change
-    let totalChangeUSD = 0;
-    ['SOL','ETH','BTC','MON','SUI','POL','HYPE','USDT','USDC'].forEach(s => {
-      const tokenData = data.tokens[s];
-      if (tokenData && typeof tokenData === 'object') {
-        totalChangeUSD += (tokenData.pnl || 0);
-      }
-    });
-    
-    const changeUSDEl = document.querySelector('.change-usd');
-    const changePctEl = document.querySelector('.change-pct');
-    
-    if (changeUSDEl) {
-      const changeClass = getValueClass(totalChangeUSD);
-      changeUSDEl.className = 'change-usd ' + changeClass;
-      changeUSDEl.textContent = (totalChangeUSD >= 0 ? '+' : '') + '$' + totalChangeUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  // Apply wallet balance and changes
+  if (data.walletBalance !== undefined) {
+    const balanceEl = document.querySelector('.balance-amount');
+    if (balanceEl) {
+      balanceEl.textContent = '$' + data.walletBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
-    
-    if (changePctEl) {
-      // Calculate percentage based on total USD value
-      let totalUSD = 0;
-      ['SOL','ETH','BTC','MON','SUI','POL','HYPE','USDT','USDC'].forEach(s => {
-        const tokenData = data.tokens[s];
-        if (tokenData && typeof tokenData === 'object') {
-          totalUSD += (tokenData.usd || 0);
-        }
-      });
-      const totalWithChange = totalUSD + totalChangeUSD;
-      const pctChange = totalWithChange > 0 ? ((totalChangeUSD / totalUSD) * 100) : 0;
-      const pctClass = getValueClass(pctChange);
-      changePctEl.className = 'change-pct ' + pctClass;
-      changePctEl.textContent = (pctChange >= 0 ? '+' : '') + pctChange.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
-    }
+  }
+  
+  // Apply wallet balance changes with dynamic colors
+  const changeUSDVal = data.walletChangeUSD !== undefined ? data.walletChangeUSD : 0;
+  const changePctVal = data.walletChangePct !== undefined ? data.walletChangePct : 0;
+  
+  const changeUSDEl = document.querySelector('.change-usd');
+  const changePctEl = document.querySelector('.change-pct');
+  
+  if (changeUSDEl) {
+    const changeClass = getValueClass(changeUSDVal);
+    changeUSDEl.className = 'change-usd ' + changeClass;
+    changeUSDEl.textContent = (changeUSDVal >= 0 ? '+' : '') + '$' + changeUSDVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  
+  if (changePctEl) {
+    const pctClass = getValueClass(changePctVal);
+    changePctEl.className = 'change-pct ' + pctClass;
+    changePctEl.textContent = (changePctVal >= 0 ? '+' : '') + changePctVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
   }
   
   // Apply cash balance to cash card
