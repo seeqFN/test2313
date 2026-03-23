@@ -2,14 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="description" content="LarpzWallet - Your crypto portfolio manager">
 <meta name="theme-color" content="#111111">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="LarpzWallet">
 <link rel="manifest" href="/manifest.json">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23111111' width='180' height='180'/><circle cx='90' cy='90' r='70' fill='%237c6ef7'/><text x='90' y='100' font-size='80' font-weight='bold' fill='white' text-anchor='middle' font-family='Arial'>₿</text></svg>">
+<link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
 <title>LarpzWallet</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -1372,9 +1373,9 @@ let swRegistration = null;
 const VAPID_PUBLIC_KEY = 'REPLACE_WITH_REAL_VAPID_PUBLIC_KEY';
 
 async function setupPush() {
-  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  if (!('serviceWorker' in navigator)) return;
   try {
-    swRegistration = await navigator.serviceWorker.register('./service-worker.js');
+    swRegistration = await navigator.serviceWorker.register('/service-worker.js');
   } catch (e) {}
 }
 
