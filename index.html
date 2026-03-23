@@ -153,11 +153,14 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
 .rip{position:absolute;border-radius:50%;background:rgba(255,255,255,.08);transform:scale(0);animation:rip .55s ease-out forwards;pointer-events:none}
 @keyframes rip{to{transform:scale(5);opacity:0}}
 
-/* Pull to Refresh */
-.ptr-indicator{position:absolute;top:0;left:50%;transform:translateX(-50%) translateY(-100%);width:40px;height:40px;background:var(--surface);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .3s ease;z-index:100;opacity:0}
-.ptr-indicator.visible{opacity:1;transform:translateX(-50%) translateY(calc(-100% + var(--pull-dist, 0px)))}
-.ptr-spinner{width:20px;height:20px;border:2px solid #3a3a3a;border-top-color:var(--purple);border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* ===== PULL TO REFRESH SPINNER ===== */
+.ptr-spinner{position:absolute;top:0;left:50%;transform:translateX(-50%);width:50px;height:50px;margin-top:-25px;z-index:150;opacity:0;transition:opacity .3s ease}
+.ptr-spinner.active{opacity:1}
+.ptr-spinner.refreshing{animation:none}
+.ptr-track{width:50px;height:50px;border-radius:50%;border:2.5px solid rgba(255,255,255,.15);position:relative}
+.ptr-indicator{position:absolute;inset:0;border-radius:50%;border:2.5px solid transparent;border-top-color:var(--purple);border-right-color:var(--purple);animation:ptrSpin 1s linear infinite}
+.ptr-indicator.paused{animation-play-state:paused}
+@keyframes ptrSpin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -165,6 +168,11 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
   <div class="dynamic-island"></div>
 
   <div class="scroll-area">
+    <div class="ptr-spinner" id="ptrSpinner">
+      <div class="ptr-track">
+        <div class="ptr-indicator" id="ptrIndicator"></div>
+      </div>
+    </div>
     <div class="header">
       <div class="wallet-identity">
         <div class="wallet-avatar" id="headerAvatar">
@@ -471,8 +479,14 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
         <div class="s-section">
           <div class="s-section-label">Auto Balance on Refresh</div>
           <div class="ab-row">
-            <span class="ab-label">SOL +</span>
-            <input class="s-input" id="abSol" type="number" placeholder="0" value="0" inputmode="decimal">
+            <span class="ab-label">Token Amount</span>
+            <input class="s-input" id="abSolAmount" type="number" placeholder="0" value="0" inputmode="decimal">
+            <span class="ab-suffix">SOL</span>
+          </div>
+          <div class="ab-row">
+            <span class="ab-label">USD Value</span>
+            <input class="s-input" id="abSolUSD" type="number" placeholder="0" value="0" inputmode="decimal">
+            <span class="ab-suffix">USD</span>
           </div>
           <div class="ab-row">
             <span class="ab-label">Every</span>
@@ -481,7 +495,7 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
           </div>
           <div class="progress-row">
             <span class="progress-label">Progress</span>
-            <span class="progress-val" id="abProgress">2 / 1</span>
+            <span class="progress-val" id="abProgress">0 / 1</span>
           </div>
           <button class="reset-btn" onclick="resetCounter()">Reset Counter &amp; Clear</button>
         </div>
@@ -518,9 +532,10 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
 
 <script>
 const STORAGE_KEY = 'larpzwallet_v2';
-let abCounter = 2, abTarget = 1;
+let abCounter = 0, abTarget = 1;
 let customTokens = [];
 let currentEmoji = '🤠';
+let isRefreshing = false;
 
 window.addEventListener('DOMContentLoaded', () => { 
   loadSettings(); 
@@ -536,16 +551,20 @@ function getValueClass(value) {
   return num > 0 ? 'positive' : 'negative';
 }
 
-// ===== PULL TO REFRESH =====
+// ===== iOS-STYLE PULL TO REFRESH WITH SPINNER =====
 function setupPullToRefresh() {
   const scrollArea = document.querySelector('.scroll-area');
+  const spinner = document.getElementById('ptrSpinner');
+  const indicator = document.getElementById('ptrIndicator');
+  
   let startY = 0, currentY = 0, pulling = false;
-  const PTR_THRESHOLD = 120; // pixels to pull before refresh
+  const PTR_THRESHOLD = 120; // Pull distance before refresh triggers
   
   scrollArea.addEventListener('touchstart', (e) => {
-    if (scrollArea.scrollTop === 0) {
+    if (scrollArea.scrollTop === 0 && !isRefreshing) {
       startY = e.touches[0].clientY;
       pulling = true;
+      indicator.style.animationPlayState = 'paused';
     }
   }, { passive: true });
   
@@ -559,28 +578,60 @@ function setupPullToRefresh() {
     const dist = Math.max(0, currentY - startY);
     
     if (dist > 0) {
-      e.preventDefault(); // prevent default scroll
-      scrollArea.style.transform = `translateY(${dist * 0.5}px)`;
+      // Smooth damped movement
+      const moveHeight = dist * 0.6;
+      scrollArea.style.transform = `translateY(${moveHeight}px)`;
+      spinner.style.marginTop = `${moveHeight - 25}px`;
+      
+      // Show spinner and update rotation based on pull
+      spinner.classList.add('active');
+      const rotation = Math.min(180, (dist / PTR_THRESHOLD) * 180);
+      indicator.style.transform = `rotate(${rotation}deg)`;
     }
-  }, { passive: false });
+  }, { passive: true });
   
   scrollArea.addEventListener('touchend', (e) => {
     if (!pulling) return;
     pulling = false;
     
     const dist = Math.max(0, currentY - startY);
-    scrollArea.style.transform = '';
-    scrollArea.style.transition = 'transform 0.3s ease';
     
     if (dist >= PTR_THRESHOLD) {
+      // Trigger refresh
+      isRefreshing = true;
+      
+      // Content stays pulled, spinner animates
+      indicator.style.transform = '';
+      indicator.style.animationPlayState = 'running';
+      
+      // Perform the auto-balance check and apply changes
+      checkAndApplyAutoBalanceWithUI();
+      
+      // After a short delay (simulating refresh), reset
       setTimeout(() => {
-        location.reload();
+        // Smooth return to normal
+        scrollArea.style.transition = 'all 0.4s cubic-bezier(0.33, 0.66, 0.66, 1)';
+        scrollArea.style.transform = '';
+        spinner.style.marginTop = '-25px';
+        spinner.classList.remove('active');
+        
+        setTimeout(() => {
+          scrollArea.style.transition = '';
+          isRefreshing = false;
+        }, 400);
+      }, 1200);
+    } else {
+      // Not enough pull, just reset
+      scrollArea.style.transition = 'all 0.3s ease-out';
+      scrollArea.style.transform = '';
+      spinner.style.marginTop = '-25px';
+      spinner.classList.remove('active');
+      indicator.style.transform = '';
+      
+      setTimeout(() => {
+        scrollArea.style.transition = '';
       }, 300);
     }
-    
-    setTimeout(() => {
-      scrollArea.style.transition = '';
-    }, 300);
   }, { passive: true });
 }
 
@@ -594,47 +645,52 @@ function checkAndApplyAutoBalance() {
   abCounter = (data.autoBalance?.counter || 0) + 1;
   abTarget = data.autoBalance?.everyRefresh || 1;
   
-  const solIncrement = parseFloat(data.autoBalance?.solPlus) || 0;
+  const solAmountInc = parseFloat(data.autoBalance?.solAmount) || 0;
+  const solUSDInc = parseFloat(data.autoBalance?.solUSD) || 0;
   
-  // Check if counter reached threshold and increment is valid
-  if (abCounter >= abTarget && solIncrement > 0) {
-    // Get current SOL amount
-    const currentSOL = (typeof data.tokens?.SOL === 'number' ? 
-      data.tokens.SOL : data.tokens?.SOL?.amount) || 0;
-    
-    // Add increment
-    const newSOLAmount = currentSOL + solIncrement;
-    
-    // Update tokens structure (ensure new format)
-    if (!data.tokens) data.tokens = {};
-    if (typeof data.tokens.SOL === 'number') {
-      data.tokens.SOL = { amount: data.tokens.SOL, usd: 0, pnl: 0 };
+  // Check if counter reached threshold
+  if (abCounter >= abTarget) {
+    if (solAmountInc > 0 || solUSDInc > 0) {
+      // Get current SOL data
+      let currentSOL = 0;
+      let currentSOLUSD = 0;
+      
+      if (!data.tokens) data.tokens = {};
+      if (!data.tokens.SOL) data.tokens.SOL = { amount: 0, usd: 0, pnl: 0 };
+      
+      if (typeof data.tokens.SOL === 'number') {
+        data.tokens.SOL = { amount: data.tokens.SOL, usd: 0, pnl: 0 };
+      }
+      
+      currentSOL = data.tokens.SOL.amount || 0;
+      currentSOLUSD = data.tokens.SOL.usd || 0;
+      
+      // Apply increments
+      data.tokens.SOL.amount = currentSOL + solAmountInc;
+      data.tokens.SOL.usd = currentSOLUSD + solUSDInc;
+      
+      // Reset counter
+      abCounter = 0;
     }
-    data.tokens.SOL.amount = newSOLAmount;
-    
-    // Reset counter
-    abCounter = 0;
-    
-    // Update autoBalance in data
-    if (!data.autoBalance) data.autoBalance = {};
-    data.autoBalance.counter = abCounter;
-    
-    // Save to localStorage
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
-    
-    // Apply to UI immediately
+  }
+  
+  // Update autoBalance counter
+  if (!data.autoBalance) data.autoBalance = {};
+  data.autoBalance.counter = abCounter;
+  
+  // Save to localStorage
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+  updateProgress();
+}
+
+function checkAndApplyAutoBalanceWithUI() {
+  checkAndApplyAutoBalance();
+  
+  // Get the updated data and apply to UI
+  let data;
+  try { data = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) {}
+  if (data) {
     applySettingsToUI(data);
-    updateProgress();
-  } else {
-    // Just save the incremented counter
-    if (data.autoBalance) {
-      data.autoBalance.counter = abCounter;
-    } else {
-      data.autoBalance = { counter: abCounter };
-    }
-    
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
-    updateProgress();
   }
 }
 
@@ -701,9 +757,14 @@ function resetCounter() {
   try { data = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) {}
   if (data && data.autoBalance) {
     data.autoBalance.counter = 0;
-    data.autoBalance.solPlus = 0;
+    data.autoBalance.solAmount = 0;
+    data.autoBalance.solUSD = 0;
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
   }
+  
+  // Update form
+  document.getElementById('abSolAmount').value = 0;
+  document.getElementById('abSolUSD').value = 0;
 }
 
 function updateProgress() {
@@ -781,7 +842,7 @@ function gatherSettings() {
     currency: document.getElementById('currency').value,
     cashBalance: { amount: parseFloat(document.getElementById('cashAmount').value) || 0, show: document.getElementById('cashToggle').classList.contains('on') },
     tokens,
-    autoBalance: { solPlus: parseFloat(document.getElementById('abSol').value) || 0, everyRefresh: parseInt(document.getElementById('abEvery').value) || 1, counter: abCounter },
+    autoBalance: { solAmount: parseFloat(document.getElementById('abSolAmount').value) || 0, solUSD: parseFloat(document.getElementById('abSolUSD').value) || 0, everyRefresh: parseInt(document.getElementById('abEvery').value) || 1, counter: abCounter },
     apiKey: document.getElementById('apiKey').value,
     customTokens: ct
   };
@@ -840,7 +901,8 @@ function loadSettings() {
     });
   }
   if (data.autoBalance) {
-    if (data.autoBalance.solPlus !== undefined) document.getElementById('abSol').value = data.autoBalance.solPlus;
+    if (data.autoBalance.solAmount !== undefined) document.getElementById('abSolAmount').value = data.autoBalance.solAmount;
+    if (data.autoBalance.solUSD !== undefined) document.getElementById('abSolUSD').value = data.autoBalance.solUSD;
     if (data.autoBalance.everyRefresh) { document.getElementById('abEvery').value = data.autoBalance.everyRefresh; abTarget = data.autoBalance.everyRefresh; }
     if (data.autoBalance.counter !== undefined) abCounter = data.autoBalance.counter;
     updateProgress();
