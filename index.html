@@ -12,7 +12,6 @@
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23111111' width='180' height='180'/><circle cx='90' cy='90' r='70' fill='%237c6ef7'/><text x='90' y='100' font-size='80' font-weight='bold' fill='white' text-anchor='middle' font-family='Arial'>₿</text></svg>">
 <title>LarpzWallet</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#111111;--surface:#1e1e1e;--surface2:#252525;--surface3:#2a2a2a;
@@ -92,9 +91,14 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
 .s-close{width:32px;height:32px;background:#2c2c2e;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;color:#aaa;flex-shrink:0}
 .s-close:hover{background:#3a3a3c}
 .s-close:active{transform:scale(.9)}
+.settings-tabs{display:flex;gap:8px;padding:10px 20px 0;flex-shrink:0}
+.s-tab-btn{flex:1;background:#242428;border:1px solid #32323a;color:#bbb;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font)}
+.s-tab-btn.active{background:var(--purple-dim);border-color:var(--purple);color:#fff}
 .s-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:18px 20px 0;scrollbar-width:thin;scrollbar-color:#333 transparent}
 .s-body::-webkit-scrollbar{width:3px}
 .s-body::-webkit-scrollbar-thumb{background:#333;border-radius:2px}
+.s-tab-panel{display:none}
+.s-tab-panel.active{display:block}
 .s-section{margin-bottom:24px}
 .s-section-label{font-size:11px;font-weight:700;letter-spacing:.9px;color:var(--purple-light);margin-bottom:13px;text-transform:uppercase}
 .s-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
@@ -144,9 +148,33 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
 .ct-fetch-btn:hover{background:var(--purple)}
 .ct-fetch-btn:active{transform:scale(.95)}
 .ct-fetch-btn:disabled{opacity:.5;cursor:not-allowed}
+.ct-msg{font-size:12px;margin-top:8px;color:var(--text2)}
+.ct-msg.err{color:var(--red)}
+.ct-msg.ok{color:#22c55e}
 .add-token-btn{width:100%;background:transparent;border:1.5px dashed #3a3a3a;border-radius:12px;padding:14px;font-size:14px;font-weight:600;color:var(--text2);cursor:pointer;transition:border-color .2s,color .2s,transform .1s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px}
 .add-token-btn:hover{border-color:var(--purple);color:var(--purple-light)}
 .add-token-btn:active{transform:scale(.98)}
+.u-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.u-chip{display:flex;align-items:center;gap:8px;background:#23232a;border:1px solid #333;padding:8px 10px;border-radius:10px;font-size:12px;color:#ddd}
+.u-row{display:flex;gap:10px;margin-bottom:10px}
+.u-btn{flex:1;background:#242428;border:1px solid #3a3a3a;border-radius:10px;color:#ddd;padding:11px 12px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font)}
+.u-btn.primary{background:var(--purple);border-color:transparent;color:#fff}
+.u-btn.danger{border-color:#6b2020;color:#ff9f9f}
+.u-status{font-size:12px;color:var(--text2);margin-top:8px;line-height:1.35}
+.tx-list{display:flex;flex-direction:column;gap:8px}
+.tx-item{background:#22242d;border:1px solid #333742;border-radius:12px;padding:10px 12px}
+.tx-item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.tx-amt.pos{color:#22c55e}
+.tx-amt.neg{color:var(--red)}
+.tx-meta{font-size:12px;color:#9aa0ae;word-break:break-all}
+.tx-modal{position:absolute;inset:0;background:rgba(0,0,0,.76);z-index:650;display:none;align-items:center;justify-content:center;padding:18px}
+.tx-modal.active{display:flex}
+.tx-card{width:100%;max-width:430px;background:#18181f;border-radius:16px;border:1px solid #31313a;padding:14px;max-height:90vh;overflow:auto}
+.tx-title{font-size:18px;font-weight:700;letter-spacing:-.3px;margin-bottom:12px}
+.tx-preview{background:#20222b;border:1px solid #323646;border-radius:12px;padding:12px;margin-top:10px}
+.tx-preview-row{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:6px}
+.tx-preview-row:last-child{margin-bottom:0}
+.tx-close{background:#2a2c38;border:1px solid #3b3f50;color:#d9deea;padding:9px 10px;border-radius:10px;font-weight:600;cursor:pointer}
 .s-footer{flex-shrink:0;padding:14px 20px;padding-bottom:max(28px, calc(env(safe-area-inset-bottom) + 8px));border-top:1px solid rgba(255,255,255,.06);background:#18181b}
 .save-btn{width:100%;background:var(--purple);color:#fff;font-size:17px;font-weight:700;padding:17px;border-radius:16px;cursor:pointer;transition:background .15s,transform .1s;font-family:var(--font);letter-spacing:-.2px;border:none;outline:none}
 .save-btn:hover{background:var(--purple-light)}
@@ -287,6 +315,31 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
 
   <div class="save-toast" id="saveToast">✓ Settings saved</div>
 
+  <div class="tx-modal" id="txModal" onclick="closeTxGenerator(event)">
+    <div class="tx-card" onclick="event.stopPropagation()">
+      <div class="tx-title">Transaction Generator</div>
+      <div class="s-row">
+        <span class="s-row-label">Type</span>
+        <select class="s-select" id="txType"><option value="Received">Received</option><option value="Sent">Sent</option></select>
+      </div>
+      <div class="s-row">
+        <span class="s-row-label">Token</span>
+        <select class="s-select" id="txToken"><option>SOL</option><option>ETH</option><option>BTC</option><option>MON</option><option>USDT</option><option>USDC</option></select>
+      </div>
+      <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="txAmount" type="number" inputmode="decimal" value="1"></div>
+      <div class="s-row"><span class="s-row-label">Date</span><input class="s-input" id="txDate" type="datetime-local"></div>
+      <div class="s-row"><span class="s-row-label">From</span><input class="s-input" id="txFrom" type="text" placeholder="Wallet address"></div>
+      <div class="u-row">
+        <button class="u-btn" onclick="randomizeTxAddress()">Randomize Address</button>
+        <button class="u-btn primary" onclick="previewTx()">Preview Transaction</button>
+      </div>
+      <div class="tx-preview" id="txPreview" style="display:none"></div>
+      <div class="u-row" style="margin-top:10px">
+        <button class="tx-close" onclick="closeTxGenerator()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Settings Overlay -->
   <div class="s-overlay" id="sOverlay" onclick="handleOverlayClick(event)">
     <div class="s-sheet" id="sSheet" onclick="event.stopPropagation()">
@@ -298,7 +351,13 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
         </div>
       </div>
 
+      <div class="settings-tabs">
+        <button class="s-tab-btn active" id="tabSettingsBtn" onclick="switchSettingsTab('settings')">Settings</button>
+        <button class="s-tab-btn" id="tabUtilitiesBtn" onclick="switchSettingsTab('utilities')">Utilities</button>
+      </div>
+
       <div class="s-body" id="sBody">
+      <div class="s-tab-panel active" id="settingsPanel">
 
         <!-- PROFILE -->
         <div class="s-section">
@@ -360,6 +419,11 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
         <!-- WALLET BALANCE -->
         <div class="s-section">
           <div class="s-section-label">Wallet Balance</div>
+          <div class="s-toggle-row">
+            <span class="s-row-label">Auto Total</span>
+            <div class="toggle on" id="autoTotalToggle" onclick="toggleSwitch('autoTotalToggle','autoTotalToggleLabel')"></div>
+            <span class="toggle-label" id="autoTotalToggleLabel">On</span>
+          </div>
           <div class="s-row">
             <span class="s-row-label">Amount</span>
             <input class="s-input" id="walletBalance" type="number" placeholder="0" value="1745385.83" inputmode="decimal">
@@ -399,7 +463,7 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
             </div>
             <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_SOL" type="number" placeholder="0" value="6254.825" inputmode="decimal"></div>
             <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_SOL_usd" type="number" placeholder="0" value="525000" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_SOL_pnl" type="number" placeholder="0" value="-18500.50" inputmode="decimal"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_SOL_pnl" type="text" placeholder="0" value="-18500.50" inputmode="decimal"></div>
           </div>
 
           <div class="tb-row">
@@ -409,7 +473,7 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
             </div>
             <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_ETH" type="number" placeholder="0" value="593.16852" inputmode="decimal"></div>
             <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_ETH_usd" type="number" placeholder="0" value="211234.50" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_ETH_pnl" type="number" placeholder="0" value="-5234.20" inputmode="decimal"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_ETH_pnl" type="text" placeholder="0" value="-5234.20" inputmode="decimal"></div>
           </div>
 
           <div class="tb-row">
@@ -419,7 +483,7 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
             </div>
             <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_BTC" type="number" placeholder="0" value="55.2" inputmode="decimal"></div>
             <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_BTC_usd" type="number" placeholder="0" value="1500000" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_BTC_pnl" type="number" placeholder="0" value="-45000.75" inputmode="decimal"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_BTC_pnl" type="text" placeholder="0" value="-45000.75" inputmode="decimal"></div>
           </div>
 
           <div class="tb-row">
@@ -429,7 +493,7 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
             </div>
             <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_MON" type="number" placeholder="0" value="0" inputmode="decimal"></div>
             <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_MON_usd" type="number" placeholder="0" value="0" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_MON_pnl" type="number" placeholder="0" value="0" inputmode="decimal"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_MON_pnl" type="text" placeholder="0" value="0" inputmode="decimal"></div>
           </div>
 
           <div class="tb-row">
@@ -439,7 +503,7 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
             </div>
             <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_SUI" type="number" placeholder="0" value="0" inputmode="decimal"></div>
             <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_SUI_usd" type="number" placeholder="0" value="0" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_SUI_pnl" type="number" placeholder="0" value="0" inputmode="decimal"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_SUI_pnl" type="text" placeholder="0" value="0" inputmode="decimal"></div>
           </div>
 
           <div class="tb-row">
@@ -449,7 +513,7 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
             </div>
             <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_POL" type="number" placeholder="0" value="0" inputmode="decimal"></div>
             <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_POL_usd" type="number" placeholder="0" value="0" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_POL_pnl" type="number" placeholder="0" value="0" inputmode="decimal"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_POL_pnl" type="text" placeholder="0" value="0" inputmode="decimal"></div>
           </div>
 
           <div class="tb-row">
@@ -459,7 +523,7 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
             </div>
             <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_HYPE" type="number" placeholder="0" value="0" inputmode="decimal"></div>
             <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_HYPE_usd" type="number" placeholder="0" value="0" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_HYPE_pnl" type="number" placeholder="0" value="0" inputmode="decimal"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_HYPE_pnl" type="text" placeholder="0" value="0" inputmode="decimal"></div>
           </div>
 
           <div class="tb-row">
@@ -469,7 +533,7 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
             </div>
             <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_USDT" type="number" placeholder="0" value="0" inputmode="decimal"></div>
             <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_USDT_usd" type="number" placeholder="0" value="0" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_USDT_pnl" type="number" placeholder="0" value="0" inputmode="decimal"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_USDT_pnl" type="text" placeholder="0" value="0" inputmode="decimal"></div>
           </div>
 
           <div class="tb-row">
@@ -479,7 +543,7 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
             </div>
             <div class="s-row"><span class="s-row-label">Amount</span><input class="s-input" id="tb_USDC" type="number" placeholder="0" value="86400" inputmode="decimal"></div>
             <div class="s-row"><span class="s-row-label">USD Value</span><input class="s-input" id="tb_USDC_usd" type="number" placeholder="0" value="86400" inputmode="decimal"></div>
-            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_USDC_pnl" type="number" placeholder="0" value="0" inputmode="decimal"></div>
+            <div class="s-row" style="margin-bottom:0"><span class="s-row-label">PnL</span><input class="s-input" id="tb_USDC_pnl" type="text" placeholder="0" value="0" inputmode="decimal"></div>
           </div>
         </div>
 
@@ -517,10 +581,20 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
           </div>
         </div>
 
+        <div class="s-section">
+          <div class="s-section-label">Helius API</div>
+          <div class="s-row">
+            <span class="s-row-label">Key</span>
+            <input class="s-input" id="heliusApiKey" type="password" placeholder="Enter Helius API key">
+          </div>
+          <div class="u-status">Used only for Custom Solana Token metadata lookups.</div>
+        </div>
+
         <!-- CUSTOM TOKENS -->
         <div class="s-section">
           <div class="s-section-label">Custom Tokens (Solana)</div>
           <div id="customTokensList"></div>
+          <div class="ct-msg" id="ctMsg"></div>
           <button class="add-token-btn" onclick="addCustomToken()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Add Token by Contract Address
@@ -528,6 +602,62 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
         </div>
 
         <div style="height:10px"></div>
+      </div>
+
+      <div class="s-tab-panel" id="utilitiesPanel">
+        <div class="s-section">
+          <div class="s-section-label">Auto Balance Utility</div>
+          <div class="u-grid" id="utilityTokenGrid">
+            <label class="u-chip"><input type="checkbox" id="utilTok_SOL" checked> SOL</label>
+            <label class="u-chip"><input type="checkbox" id="utilTok_ETH"> ETH</label>
+            <label class="u-chip"><input type="checkbox" id="utilTok_BTC"> BTC</label>
+            <label class="u-chip"><input type="checkbox" id="utilTok_MON"> MON</label>
+          </div>
+          <div class="u-row" style="margin-top:10px">
+            <input class="s-input" id="utilMin" type="number" inputmode="decimal" placeholder="Min" value="1">
+            <input class="s-input" id="utilMax" type="number" inputmode="decimal" placeholder="Max" value="10">
+          </div>
+          <div class="u-row">
+            <input class="s-input" id="utilFixed" type="number" inputmode="decimal" placeholder="Fixed amount" value="5">
+            <input class="s-input" id="utilInterval" type="number" inputmode="decimal" placeholder="Interval sec" value="8">
+          </div>
+          <div class="s-row">
+            <span class="s-row-label">Mode</span>
+            <select class="s-select" id="utilMode">
+              <option value="manual">Manual</option>
+              <option value="auto">Auto</option>
+              <option value="random">Random</option>
+              <option value="fixed">Fixed</option>
+            </select>
+          </div>
+          <div class="u-row">
+            <button class="u-btn" onclick="runUtilityOnce()">Manual Trigger</button>
+            <button class="u-btn primary" onclick="startUtilityAuto()">Start Auto</button>
+            <button class="u-btn danger" onclick="stopUtilityAuto()">Stop Auto</button>
+          </div>
+          <div class="u-status" id="utilityStatus">Stopped</div>
+        </div>
+
+        <div class="s-section">
+          <div class="s-section-label">Transaction Generator</div>
+          <div class="u-row">
+            <button class="u-btn primary" onclick="openTxGenerator()">Open Generator</button>
+          </div>
+          <div class="tx-list" id="txList"></div>
+        </div>
+
+        <div class="s-section">
+          <div class="s-section-label">Push Notifications</div>
+          <div class="u-row">
+            <button class="u-btn" onclick="requestPushPermission()">Request Permission</button>
+            <button class="u-btn primary" onclick="subscribeToPush()">Enable Push</button>
+          </div>
+          <div class="u-status" id="pushPermissionStatus">Permission: unknown</div>
+          <div class="u-status" id="pushSubscriptionStatus">Subscription: unknown</div>
+        </div>
+
+        <div style="height:10px"></div>
+      </div>
       </div>
 
       <div class="s-footer">
@@ -540,115 +670,120 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
 
 <script>
 const STORAGE_KEY = 'larpzwallet_v2';
-let abCounter = 0, abTarget = 1;
+const TOKENS = ['SOL','ETH','BTC','MON','SUI','POL','HYPE','USDT','USDC'];
+const tokenApproxPrice = { SOL: 160, ETH: 3500, BTC: 65000, MON: 1.25, SUI: 1.2, POL: 0.9, HYPE: 3.1, USDT: 1, USDC: 1 };
+let abCounter = 0;
+let abTarget = 1;
 let customTokens = [];
 let currentEmoji = '🤠';
+let ctIdCounter = 0;
+let utilityTimer = null;
+let txHistory = [];
 
-window.addEventListener('DOMContentLoaded', () => { 
-  loadSettings(); 
+window.addEventListener('DOMContentLoaded', async () => {
+  wireSheetSwipe();
+  wireLivePreview();
+  loadSettings();
   renderCustomTokens();
   checkAndApplyAutoBalance();
+  renderTxHistory();
+  updateProgress();
+  await setupPush();
+  updatePushStatus();
+  const txDate = document.getElementById('txDate');
+  if (txDate && !txDate.value) txDate.value = new Date().toISOString().slice(0,16);
 });
 
-// ===== HELPER: Determine color class from numeric value =====
-function getValueClass(value) {
-  const num = parseFloat(value);
-  if (isNaN(num) || num === 0) return 'neutral';
-  return num > 0 ? 'positive' : 'negative';
+function parseSignedValue(val) {
+  if (val === null || val === undefined) return 0;
+  const cleaned = String(val).replace(/[%,$\s]/g, '');
+  const num = parseFloat(cleaned);
+  return isNaN(num) ? 0 : num;
 }
 
-// ===== AUTO BALANCE ON REFRESH =====
-function checkAndApplyAutoBalance() {
-  let data;
-  try { data = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) { return; }
-  if (!data) return;
-  
-  // Increment counter
-  abCounter = (data.autoBalance?.counter || 0) + 1;
-  abTarget = data.autoBalance?.everyRefresh || 1;
-  
-  const solAmountInc = parseFloat(data.autoBalance?.solAmount) || 0;
-  const solUSDInc = parseFloat(data.autoBalance?.solUSD) || 0;
-  
-  // Check if counter reached threshold
-  if (abCounter >= abTarget) {
-    if (solAmountInc > 0 || solUSDInc > 0) {
-      // Get current SOL data
-      let currentSOL = 0;
-      let currentSOLUSD = 0;
-      
-      if (!data.tokens) data.tokens = {};
-      if (!data.tokens.SOL) data.tokens.SOL = { amount: 0, usd: 0, pnl: 0 };
-      
-      if (typeof data.tokens.SOL === 'number') {
-        data.tokens.SOL = { amount: data.tokens.SOL, usd: 0, pnl: 0 };
-      }
-      
-      currentSOL = data.tokens.SOL.amount || 0;
-      currentSOLUSD = data.tokens.SOL.usd || 0;
-      
-      // Apply increments
-      data.tokens.SOL.amount = currentSOL + solAmountInc;
-      data.tokens.SOL.usd = currentSOLUSD + solUSDInc;
-      
-      // Reset counter
-      abCounter = 0;
-    }
-  }
-  
-  // Update autoBalance counter
-  if (!data.autoBalance) data.autoBalance = {};
-  data.autoBalance.counter = abCounter;
-  
-  // Save to localStorage
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
-  updateProgress();
+function formatUSD(value) {
+  return '$' + (parseFloat(value) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function formatSignedUSD(value) {
+  const n = parseFloat(value) || 0;
+  return (n >= 0 ? '+' : '-') + '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function getValueClass(value) {
+  const n = parseFloat(value);
+  if (isNaN(n) || n === 0) return 'neutral';
+  return n > 0 ? 'positive' : 'negative';
+}
+
+function showCtMessage(message, type) {
+  const el = document.getElementById('ctMsg');
+  if (!el) return;
+  el.className = 'ct-msg ' + (type || '');
+  el.textContent = message || '';
+}
+
+function switchSettingsTab(tab) {
+  const isSettings = tab === 'settings';
+  document.getElementById('settingsPanel')?.classList.toggle('active', isSettings);
+  document.getElementById('utilitiesPanel')?.classList.toggle('active', !isSettings);
+  document.getElementById('tabSettingsBtn')?.classList.toggle('active', isSettings);
+  document.getElementById('tabUtilitiesBtn')?.classList.toggle('active', !isSettings);
 }
 
 function openSettings() {
   document.getElementById('sOverlay').classList.add('active');
   document.getElementById('sSheet').classList.add('active');
 }
+
 function closeSettings() {
   document.getElementById('sOverlay').classList.remove('active');
   document.getElementById('sSheet').classList.remove('active');
   closeEmojiPicker();
 }
+
 function handleOverlayClick(e) {
   if (e.target === document.getElementById('sOverlay')) closeSettings();
 }
 
-// Swipe down
-let ty = 0;
-const ss = document.getElementById('sSheet');
-ss.addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
-ss.addEventListener('touchmove', e => {
-  const d = e.touches[0].clientY - ty;
-  if (d > 0) { ss.style.transition = 'none'; ss.style.transform = `translateY(${Math.min(d, 250)}px)`; }
-}, { passive: true });
-ss.addEventListener('touchend', e => {
-  ss.style.transition = '';
-  ss.style.transform = '';
-  if (e.changedTouches[0].clientY - ty > 80) closeSettings();
-});
+function wireSheetSwipe() {
+  let ty = 0;
+  const ss = document.getElementById('sSheet');
+  if (!ss) return;
+  ss.addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
+  ss.addEventListener('touchmove', e => {
+    const d = e.touches[0].clientY - ty;
+    if (d > 0) {
+      ss.style.transition = 'none';
+      ss.style.transform = `translateY(${Math.min(d, 220)}px)`;
+    }
+  }, { passive: true });
+  ss.addEventListener('touchend', e => {
+    ss.style.transition = '';
+    ss.style.transform = '';
+    if (e.changedTouches[0].clientY - ty > 80) closeSettings();
+  });
+}
 
 function toggleEmojiPicker(e) {
   e.stopPropagation();
   const p = document.getElementById('emojiPicker');
   p.style.display = p.style.display === 'none' ? 'flex' : 'none';
 }
+
 function pickEmoji(emoji) {
   currentEmoji = emoji;
   document.getElementById('emojiBtnDisplay').textContent = emoji;
-  // Update header emoji immediately
   document.getElementById('headerEmojiDisplay').textContent = emoji;
   closeEmojiPicker();
 }
+
 function closeEmojiPicker() {
   const p = document.getElementById('emojiPicker');
   if (p) p.style.display = 'none';
 }
-document.getElementById('sBody').addEventListener('click', e => {
+
+document.addEventListener('click', e => {
   if (!e.target.closest('.emoji-wrap')) closeEmojiPicker();
 });
 
@@ -656,159 +791,96 @@ function toggleSwitch(id, labelId) {
   const el = document.getElementById(id);
   const on = el.classList.toggle('on');
   if (labelId) document.getElementById(labelId).textContent = on ? 'Visible' : 'Hidden';
+  if (id === 'autoTotalToggle') runLivePreview();
+}
+
+function updateProgress() {
+  const p = document.getElementById('abProgress');
+  if (p) p.textContent = `${abCounter} / ${abTarget}`;
 }
 
 function resetCounter() {
   abCounter = 0;
   abTarget = parseInt(document.getElementById('abEvery').value) || 1;
-  updateProgress();
-  
-  // Save to localStorage
-  let data;
-  try { data = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) {}
-  if (data && data.autoBalance) {
-    data.autoBalance.counter = 0;
-    data.autoBalance.solAmount = 0;
-    data.autoBalance.solUSD = 0;
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
-  }
-  
-  // Update form
   document.getElementById('abSolAmount').value = 0;
   document.getElementById('abSolUSD').value = 0;
+  updateProgress();
 }
 
-function updateProgress() {
-  document.getElementById('abProgress').textContent = `${abCounter} / ${abTarget}`;
+function extractImageFromHelius(content) {
+  if (!content) return '';
+  if (content.links?.image) return content.links.image;
+  if (content.metadata?.image) return content.metadata.image;
+  if (Array.isArray(content.files)) {
+    for (const file of content.files) {
+      if (!file?.uri) continue;
+      const mime = (file.mime || '').toLowerCase();
+      if (mime.startsWith('image/') || /\.(png|jpg|jpeg|gif|webp|svg)$/i.test(file.uri)) return file.uri;
+    }
+    if (content.files[0]?.uri) return content.files[0].uri;
+  }
+  return '';
 }
 
-let ctIdCounter = 0;
+async function fetchTokenFromHelius(id) {
+  showCtMessage('', '');
+  const mintInput = document.getElementById('ctMint_' + id);
+  const mintAddress = mintInput?.value?.trim();
+  if (!mintAddress) return showCtMessage('Please enter a mint address.', 'err');
+
+  const apiKey = document.getElementById('heliusApiKey')?.value?.trim();
+  if (!apiKey) return showCtMessage('Please add your Helius API key in settings.', 'err');
+
+  const btn = document.getElementById('ctFetch_' + id);
+  if (btn) btn.disabled = true;
+  try {
+    const response = await fetch(`https://mainnet.helius-rpc.com/?api-key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'getAsset', params: { id: mintAddress } })
+    });
+    const result = await response.json();
+    const content = result?.result?.content;
+    if (!content) return showCtMessage('Mint not found or invalid address.', 'err');
+
+    const token = customTokens.find(t => t.id === id);
+    if (!token) return;
+    token.mint = mintAddress;
+    token.name = content?.metadata?.name || 'Custom Token';
+    token.symbol = content?.metadata?.symbol || '???';
+    token.image = extractImageFromHelius(content);
+    renderCustomTokens();
+    showCtMessage('Token info fetched successfully.', 'ok');
+  } catch (err) {
+    showCtMessage('Failed to fetch token info. Check API key and mint.', 'err');
+  }
+  if (btn) btn.disabled = false;
+}
+
 function addCustomToken(mint, name, symbol, image, amount, usdValue, pnl) {
-  ctIdCounter++;
-  const id = ctIdCounter;
+  ctIdCounter += 1;
   customTokens.push({
-    id,
+    id: ctIdCounter,
     mint: mint || '',
     name: name || 'Custom Token',
     symbol: symbol || '???',
     image: image || '',
-    amount: amount || 0,
-    usdValue: usdValue || 0,
-    pnl: pnl || 0
+    amount: parseFloat(amount) || 0,
+    usdValue: parseFloat(usdValue) || 0,
+    pnl: parseSignedValue(pnl)
   });
   renderCustomTokens();
-  setTimeout(() => {
-    const b = document.getElementById('sBody');
-    b.scrollTop = b.scrollHeight;
-  }, 50);
 }
 
 function removeCustomToken(id) {
   customTokens = customTokens.filter(t => t.id !== id);
   renderCustomTokens();
-}
-
-// Helper: Extract image from Helius response - tries multiple sources
-function extractImageFromHelius(content) {
-  if (!content) return '';
-  
-  // Priority 1: content.links.image
-  if (content.links?.image) return content.links.image;
-  
-  // Priority 2: content.metadata.image
-  if (content.metadata?.image) return content.metadata.image;
-  
-  // Priority 3: files array - check for image MIME types
-  if (Array.isArray(content.files) && content.files.length > 0) {
-    for (const file of content.files) {
-      if (file.uri) {
-        const mime = file.mime?.toLowerCase() || '';
-        // Check if it's an image
-        if (mime.startsWith('image/') || file.uri.match(/\.(png|jpg|jpeg|gif|webp|svg)$/i)) {
-          return file.uri;
-        }
-      }
-    }
-    // Fallback: use first file URI if content suggests it's an image
-    if (content.files[0]?.uri) {
-      const firstUri = content.files[0].uri;
-      if (firstUri.match(/\.(png|jpg|jpeg|gif|webp|svg)$/i)) {
-        return firstUri;
-      }
-    }
-  }
-  
-  return '';
-}
-
-async function fetchTokenFromHelius(id) {
-  const mintInput = document.getElementById('ctMint_' + id);
-  const mintAddress = mintInput?.value?.trim();
-  
-  if (!mintAddress) {
-    alert('Please enter a mint address');
-    return;
-  }
-  
-  const apiKeyInput = document.getElementById('apiKey');
-  const apiKey = apiKeyInput?.value?.trim();
-  
-  if (!apiKey) {
-    alert('Please set your Helius API key in CoinGecko API section');
-    return;
-  }
-  
-  const btn = document.getElementById('ctFetch_' + id);
-  if (btn) btn.disabled = true;
-  
-  try {
-    const response = await fetch(`https://mainnet.helius-rpc.com/?api-key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'getAsset',
-        params: { id: mintAddress }
-      })
-    });
-    
-    const result = await response.json();
-    
-    if (result.result && result.result.content) {
-      const metadata = result.result.content.metadata;
-      const content = result.result.content;
-      const image = extractImageFromHelius(content);
-      
-      const token = customTokens.find(t => t.id === id);
-      if (token) {
-        token.mint = mintAddress;
-        token.name = metadata?.name || 'Custom Token';
-        token.symbol = metadata?.symbol || '???';
-        token.image = image;
-      }
-      
-      if (document.getElementById('ctName_' + id)) {
-        document.getElementById('ctName_' + id).value = token.name;
-      }
-      if (document.getElementById('ctSymbol_' + id)) {
-        document.getElementById('ctSymbol_' + id).value = token.symbol;
-      }
-      
-      renderCustomTokens();
-    } else {
-      alert('Token not found or invalid mint address');
-    }
-  } catch (e) {
-    console.error('Helius API error:', e);
-    alert('Error fetching token info. Check API key and mint address.');
-  }
-  
-  if (btn) btn.disabled = false;
+  runLivePreview();
 }
 
 function renderCustomTokens() {
   const c = document.getElementById('customTokensList');
+  if (!c) return;
   c.innerHTML = '';
   customTokens.forEach(t => {
     const d = document.createElement('div');
@@ -824,7 +896,7 @@ function renderCustomTokens() {
         <span class="ct-field-label">Mint</span>
         <div style="flex:1;display:flex;gap:4px;align-items:center">
           <input class="s-input" style="font-size:11px;padding:8px 10px;flex:1" id="ctMint_${t.id}" type="text" placeholder="Solana mint address" value="${t.mint}" oninput="syncCustomTokenData(${t.id}, 'mint')">
-          <button class="ct-fetch-btn" id="ctFetch_${t.id}" onclick="fetchTokenFromHelius(${t.id})">Fetch</button>
+          <button class="ct-fetch-btn" id="ctFetch_${t.id}" onclick="fetchTokenFromHelius(${t.id})">Fetch token info</button>
         </div>
       </div>
       <div class="ct-field">
@@ -845,330 +917,540 @@ function renderCustomTokens() {
       </div>
       <div class="ct-field" style="margin-bottom:0">
         <span class="ct-field-label">PnL</span>
-        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctPnL_${t.id}" type="number" placeholder="0" value="${t.pnl}" inputmode="decimal" oninput="syncCustomTokenData(${t.id}, 'pnl')">
+        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctPnL_${t.id}" type="text" placeholder="0" value="${t.pnl}" inputmode="decimal" oninput="syncCustomTokenData(${t.id}, 'pnl')">
       </div>`;
     c.appendChild(d);
   });
 }
 
 function syncCustomTokenData(id, field) {
-  const token = customTokens.find(t => t.id === id);
-  if (!token) return;
-  
-  switch(field) {
-    case 'mint':
-      token.mint = document.getElementById('ctMint_' + id)?.value || '';
-      break;
-    case 'name':
-      token.name = document.getElementById('ctName_' + id)?.value || 'Custom Token';
-      break;
-    case 'symbol':
-      token.symbol = document.getElementById('ctSymbol_' + id)?.value || '???';
-      break;
-    case 'amount':
-      token.amount = parseFloat(document.getElementById('ctAmount_' + id)?.value) || 0;
-      break;
-    case 'usdValue':
-      token.usdValue = parseFloat(document.getElementById('ctUSD_' + id)?.value) || 0;
-      break;
-    case 'pnl':
-      token.pnl = parseSignedValue(document.getElementById('ctPnL_' + id)?.value);
-      break;
-  }
+  const t = customTokens.find(x => x.id === id);
+  if (!t) return;
+  if (field === 'mint') t.mint = document.getElementById('ctMint_' + id)?.value || '';
+  if (field === 'name') t.name = document.getElementById('ctName_' + id)?.value || 'Custom Token';
+  if (field === 'symbol') t.symbol = document.getElementById('ctSymbol_' + id)?.value || '???';
+  if (field === 'amount') t.amount = parseFloat(document.getElementById('ctAmount_' + id)?.value) || 0;
+  if (field === 'usdValue') t.usdValue = parseFloat(document.getElementById('ctUSD_' + id)?.value) || 0;
+  if (field === 'pnl') t.pnl = parseSignedValue(document.getElementById('ctPnL_' + id)?.value);
+  runLivePreview();
 }
 
-// Helper: Parse signed values (positive/negative) from text input
-function parseSignedValue(val) {
-  if (!val) return 0;
-  return parseFloat(val.toString().trim()) || 0;
+function computeTotalBalanceFromData(data) {
+  const cash = parseFloat(data?.cashBalance?.amount) || 0;
+  let totalUsd = cash;
+  TOKENS.forEach(s => {
+    const td = data?.tokens?.[s];
+    if (typeof td === 'number') return;
+    totalUsd += parseFloat(td?.usd) || 0;
+  });
+  (data?.customTokens || []).forEach(t => {
+    totalUsd += parseFloat(t.usdValue) || 0;
+  });
+  return totalUsd;
 }
 
 function gatherSettings() {
   const tokens = {};
-  ['SOL','ETH','BTC','MON','SUI','POL','HYPE','USDT','USDC'].forEach(s => {
-    const amountEl = document.getElementById('tb_' + s);
-    const usdEl = document.getElementById('tb_' + s + '_usd');
-    const pnlEl = document.getElementById('tb_' + s + '_pnl');
+  TOKENS.forEach(s => {
     tokens[s] = {
-      amount: amountEl ? parseFloat(amountEl.value) || 0 : 0,
-      usd: usdEl ? parseFloat(usdEl.value) || 0 : 0,
-      pnl: pnlEl ? parseFloat(pnlEl.value) || 0 : 0
+      amount: parseFloat(document.getElementById('tb_' + s)?.value) || 0,
+      usd: parseFloat(document.getElementById('tb_' + s + '_usd')?.value) || 0,
+      pnl: parseSignedValue(document.getElementById('tb_' + s + '_pnl')?.value)
     };
   });
-  const ct = customTokens.map(t => ({
-    mint: t.mint,
-    name: t.name,
-    symbol: t.symbol,
-    image: t.image,
-    amount: t.amount,
-    usdValue: t.usdValue,
-    pnl: t.pnl
-  }));
+
   return {
-    profile: { emoji: currentEmoji, username: document.getElementById('username').value, displayName: document.getElementById('displayName').value },
+    profile: {
+      emoji: currentEmoji,
+      username: document.getElementById('username').value,
+      displayName: document.getElementById('displayName').value
+    },
     currency: document.getElementById('currency').value,
     walletBalance: parseFloat(document.getElementById('walletBalance').value) || 0,
+    autoTotalBalance: document.getElementById('autoTotalToggle')?.classList.contains('on') ?? true,
     walletChangeUSD: parseSignedValue(document.getElementById('walletChangeUSD').value),
     walletChangePct: parseSignedValue(document.getElementById('walletChangePct').value),
-    cashBalance: { amount: parseFloat(document.getElementById('cashAmount').value) || 0, show: document.getElementById('cashToggle').classList.contains('on') },
+    cashBalance: {
+      amount: parseFloat(document.getElementById('cashAmount').value) || 0,
+      show: document.getElementById('cashToggle').classList.contains('on')
+    },
     tokens,
-    autoBalance: { solAmount: parseFloat(document.getElementById('abSolAmount').value) || 0, solUSD: parseFloat(document.getElementById('abSolUSD').value) || 0, everyRefresh: parseInt(document.getElementById('abEvery').value) || 1, counter: abCounter },
-    apiKey: document.getElementById('apiKey').value,
-    customTokens: ct
+    autoBalance: {
+      solAmount: parseFloat(document.getElementById('abSolAmount').value) || 0,
+      solUSD: parseFloat(document.getElementById('abSolUSD').value) || 0,
+      everyRefresh: parseInt(document.getElementById('abEvery').value) || 1,
+      counter: abCounter
+    },
+    utility: {
+      mode: document.getElementById('utilMode')?.value || 'manual',
+      min: parseFloat(document.getElementById('utilMin')?.value) || 0,
+      max: parseFloat(document.getElementById('utilMax')?.value) || 0,
+      fixed: parseFloat(document.getElementById('utilFixed')?.value) || 0,
+      interval: parseFloat(document.getElementById('utilInterval')?.value) || 5,
+      tokens: {
+        SOL: !!document.getElementById('utilTok_SOL')?.checked,
+        ETH: !!document.getElementById('utilTok_ETH')?.checked,
+        BTC: !!document.getElementById('utilTok_BTC')?.checked,
+        MON: !!document.getElementById('utilTok_MON')?.checked
+      }
+    },
+    apiKey: document.getElementById('apiKey')?.value || '',
+    heliusApiKey: document.getElementById('heliusApiKey')?.value || '',
+    customTokens: customTokens.map(t => ({ ...t })),
+    transactions: txHistory
   };
 }
 
 function saveSettings() {
   const data = gatherSettings();
+  if (data.autoTotalBalance) data.walletBalance = computeTotalBalanceFromData(data);
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
-  console.log('Settings:', data);
-  
-  // Apply settings to main UI immediately
   applySettingsToUI(data);
-  
   const toast = document.getElementById('saveToast');
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 2300);
 }
 
 function loadSettings() {
-  let data;
+  let data = null;
   try { data = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) {}
-  if (!data) return;
-  if (data.profile) {
-    if (data.profile.emoji) { currentEmoji = data.profile.emoji; document.getElementById('emojiBtnDisplay').textContent = currentEmoji; document.getElementById('headerEmojiDisplay').textContent = currentEmoji; }
-    if (data.profile.username !== undefined) document.getElementById('username').value = data.profile.username;
-    if (data.profile.displayName !== undefined) document.getElementById('displayName').value = data.profile.displayName;
+  if (!data) {
+    document.getElementById('cashToggle').classList.add('on');
+    document.getElementById('cashToggleLabel').textContent = 'Visible';
+    return;
   }
+
+  if (data.profile?.emoji) {
+    currentEmoji = data.profile.emoji;
+    document.getElementById('emojiBtnDisplay').textContent = currentEmoji;
+    document.getElementById('headerEmojiDisplay').textContent = currentEmoji;
+  }
+  if (data.profile?.username !== undefined) document.getElementById('username').value = data.profile.username;
+  if (data.profile?.displayName !== undefined) document.getElementById('displayName').value = data.profile.displayName;
   if (data.currency) document.getElementById('currency').value = data.currency;
   if (data.walletBalance !== undefined) document.getElementById('walletBalance').value = data.walletBalance;
   if (data.walletChangeUSD !== undefined) document.getElementById('walletChangeUSD').value = data.walletChangeUSD;
   if (data.walletChangePct !== undefined) document.getElementById('walletChangePct').value = data.walletChangePct;
+  if (data.autoTotalBalance) {
+    document.getElementById('autoTotalToggle')?.classList.add('on');
+    document.getElementById('autoTotalToggleLabel').textContent = 'On';
+  }
+
   if (data.cashBalance) {
     document.getElementById('cashAmount').value = data.cashBalance.amount ?? 0;
-    if (data.cashBalance.show) { document.getElementById('cashToggle').classList.add('on'); document.getElementById('cashToggleLabel').textContent = 'Visible'; }
+    if (data.cashBalance.show) {
+      document.getElementById('cashToggle').classList.add('on');
+      document.getElementById('cashToggleLabel').textContent = 'Visible';
+    }
   }
-  if (data.tokens) {
-    ['SOL','ETH','BTC','MON','SUI','POL','HYPE','USDT','USDC'].forEach(s => {
-      const amountEl = document.getElementById('tb_' + s);
-      const usdEl = document.getElementById('tb_' + s + '_usd');
-      const pnlEl = document.getElementById('tb_' + s + '_pnl');
-      const tokenData = data.tokens[s];
-      if (amountEl && tokenData !== undefined) {
-        if (typeof tokenData === 'number') {
-          // Handle legacy format (just amount)
-          amountEl.value = tokenData;
-        } else {
-          // Handle new format (object with amount, usd, pnl)
-          if (tokenData.amount !== undefined) amountEl.value = tokenData.amount;
-          if (usdEl && tokenData.usd !== undefined) usdEl.value = tokenData.usd;
-          if (pnlEl && tokenData.pnl !== undefined) pnlEl.value = tokenData.pnl;
-        }
-      }
-    });
-  }
+
+  TOKENS.forEach(s => {
+    const td = data.tokens?.[s];
+    if (td === undefined) return;
+    if (typeof td === 'number') {
+      document.getElementById('tb_' + s).value = td;
+    } else {
+      if (td.amount !== undefined) document.getElementById('tb_' + s).value = td.amount;
+      if (td.usd !== undefined) document.getElementById('tb_' + s + '_usd').value = td.usd;
+      if (td.pnl !== undefined) document.getElementById('tb_' + s + '_pnl').value = td.pnl;
+    }
+  });
+
   if (data.autoBalance) {
     if (data.autoBalance.solAmount !== undefined) document.getElementById('abSolAmount').value = data.autoBalance.solAmount;
     if (data.autoBalance.solUSD !== undefined) document.getElementById('abSolUSD').value = data.autoBalance.solUSD;
-    if (data.autoBalance.everyRefresh) { document.getElementById('abEvery').value = data.autoBalance.everyRefresh; abTarget = data.autoBalance.everyRefresh; }
+    if (data.autoBalance.everyRefresh) {
+      document.getElementById('abEvery').value = data.autoBalance.everyRefresh;
+      abTarget = data.autoBalance.everyRefresh;
+    }
     if (data.autoBalance.counter !== undefined) abCounter = data.autoBalance.counter;
-    updateProgress();
   }
+
   if (data.apiKey !== undefined) document.getElementById('apiKey').value = data.apiKey;
-  if (data.customTokens?.length) {
+  if (data.heliusApiKey !== undefined) document.getElementById('heliusApiKey').value = data.heliusApiKey;
+
+  customTokens = [];
+  ctIdCounter = 0;
+  if (Array.isArray(data.customTokens)) {
     data.customTokens.forEach(t => {
-      ctIdCounter++;
-      const newToken = {
+      ctIdCounter += 1;
+      customTokens.push({
         id: ctIdCounter,
         mint: t.mint || '',
-        name: t.name || '',
-        symbol: t.symbol || '',
+        name: t.name || 'Custom Token',
+        symbol: t.symbol || '???',
         image: t.image || '',
-        amount: t.amount !== undefined ? t.amount : 0,
-        usdValue: t.usdValue !== undefined ? t.usdValue : 0,
-        pnl: t.pnl !== undefined ? t.pnl : 0
-      };
-      customTokens.push(newToken);
+        amount: parseFloat(t.amount) || 0,
+        usdValue: parseFloat(t.usdValue) || 0,
+        pnl: parseSignedValue(t.pnl)
+      });
     });
-    renderCustomTokens();
   }
-  
-  // Apply settings to main UI
+
+  if (data.utility) {
+    document.getElementById('utilMode').value = data.utility.mode || 'manual';
+    document.getElementById('utilMin').value = data.utility.min ?? 0;
+    document.getElementById('utilMax').value = data.utility.max ?? 0;
+    document.getElementById('utilFixed').value = data.utility.fixed ?? 0;
+    document.getElementById('utilInterval').value = data.utility.interval ?? 8;
+    if (data.utility.tokens) {
+      ['SOL','ETH','BTC','MON'].forEach(k => {
+        const el = document.getElementById('utilTok_' + k);
+        if (el) el.checked = !!data.utility.tokens[k];
+      });
+    }
+  }
+
+  txHistory = Array.isArray(data.transactions) ? data.transactions : [];
+  renderCustomTokens();
+  renderTxHistory();
+  updateProgress();
   applySettingsToUI(data);
 }
 
 function applySettingsToUI(data) {
-  // Apply profile to main header
-  if (data.profile) {
-    if (data.profile.displayName) {
-      document.querySelector('.wallet-name').textContent = data.profile.displayName;
-    }
-    if (data.profile.username) {
-      document.querySelector('.wallet-handle').textContent = '@' + data.profile.username;
-    }
-    if (data.profile.emoji) {
-      const headerEmojiEl = document.getElementById('headerEmojiDisplay');
-      if (headerEmojiEl) headerEmojiEl.textContent = data.profile.emoji;
-    }
+  if (data.profile?.displayName) document.querySelector('.wallet-name').textContent = data.profile.displayName;
+  if (data.profile?.username) document.querySelector('.wallet-handle').textContent = '@' + data.profile.username;
+  if (data.profile?.emoji) document.getElementById('headerEmojiDisplay').textContent = data.profile.emoji;
+
+  const autoTotal = data.autoTotalBalance !== false;
+  const totalBalance = autoTotal ? computeTotalBalanceFromData(data) : (parseFloat(data.walletBalance) || 0);
+  const balanceEl = document.querySelector('.balance-amount');
+  if (balanceEl) balanceEl.textContent = formatUSD(totalBalance);
+  if (autoTotal) {
+    const wb = document.getElementById('walletBalance');
+    if (wb) wb.value = totalBalance.toFixed(2);
   }
-  
-  // Apply wallet balance and changes
-  if (data.walletBalance !== undefined) {
-    const balanceEl = document.querySelector('.balance-amount');
-    if (balanceEl) {
-      balanceEl.textContent = '$' + data.walletBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-  }
-  
-  // Apply wallet balance changes with dynamic colors
-  const changeUSDVal = data.walletChangeUSD !== undefined ? data.walletChangeUSD : 0;
-  const changePctVal = data.walletChangePct !== undefined ? data.walletChangePct : 0;
-  
+
+  const changeUSDVal = parseSignedValue(data.walletChangeUSD);
+  const changePctVal = parseSignedValue(data.walletChangePct);
   const changeUSDEl = document.querySelector('.change-usd');
   const changePctEl = document.querySelector('.change-pct');
-  
   if (changeUSDEl) {
-    const changeClass = getValueClass(changeUSDVal);
-    changeUSDEl.className = 'change-usd ' + changeClass;
-    changeUSDEl.textContent = (changeUSDVal >= 0 ? '+' : '') + '$' + changeUSDVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    changeUSDEl.className = 'change-usd ' + getValueClass(changeUSDVal);
+    changeUSDEl.textContent = formatSignedUSD(changeUSDVal);
   }
-  
   if (changePctEl) {
-    const pctClass = getValueClass(changePctVal);
-    changePctEl.className = 'change-pct ' + pctClass;
+    changePctEl.className = 'change-pct ' + getValueClass(changePctVal);
     changePctEl.textContent = (changePctVal >= 0 ? '+' : '') + changePctVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
   }
-  
-  // Apply cash balance to cash card
+
   if (data.cashBalance !== undefined) {
-    const cashAmount = data.cashBalance.amount ?? 0;
-    document.querySelector('.cash-amount').textContent = '$' + parseFloat(cashAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    document.querySelector('.cash-amount').textContent = formatUSD(data.cashBalance.amount ?? 0);
   }
-  
-  // Apply token balances to token cards and hide/show based on amount
+
   if (data.tokens) {
     const tokenList = document.querySelector('.token-list');
     const tokenCards = tokenList.querySelectorAll('.token-card');
-    
-    const tokenMapping = {
-      0: 'BTC',  // Bitcoin is 1st token card
-      1: 'SOL',  // Solana is 2nd token card
-      2: 'ETH',  // Ethereum is 3rd token card
-      3: 'MON'   // Monad is 4th token card
-    };
-    
+    const tokenMapping = { 0: 'BTC', 1: 'SOL', 2: 'ETH', 3: 'MON' };
     tokenCards.forEach((card, index) => {
       const tokenKey = tokenMapping[index];
-      if (tokenKey && data.tokens[tokenKey] !== undefined) {
-        const tokenData = data.tokens[tokenKey];
-        let amount = 0;
-        
-        // Handle both legacy and new token data format
-        if (typeof tokenData === 'number') {
-          amount = tokenData;
-        } else {
-          amount = tokenData.amount || 0;
-        }
-        
-        // Hide/show card based on amount
-        if (amount <= 0) {
-          card.style.display = 'none';
-        } else {
-          card.style.display = 'flex';
-          
-          // Update quantity
-          const qtyEl = card.querySelector('.token-qty');
-          if (qtyEl) {
-            let formatted;
-            if (tokenKey === 'BTC') formatted = parseFloat(amount).toFixed(8) + ' BTC';
-            else if (tokenKey === 'SOL') formatted = parseFloat(amount).toFixed(5) + ' SOL';
-            else if (tokenKey === 'ETH') formatted = parseFloat(amount).toFixed(5) + ' ETH';
-            else if (tokenKey === 'MON') formatted = parseFloat(amount).toFixed(2) + ' MON';
-            else formatted = parseFloat(amount).toString() + ' ' + tokenKey;
-            qtyEl.textContent = formatted;
-          }
-          
-          // Update USD value and PnL if available
-          if (typeof tokenData === 'object') {
-            const valueEl = card.querySelector('.token-value');
-            const chgEl = card.querySelector('.token-chg');
-            
-            if (valueEl && tokenData.usd !== undefined) {
-              const usdValue = parseFloat(tokenData.usd) || 0;
-              valueEl.textContent = '$' + usdValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            }
-            
-            if (chgEl && tokenData.pnl !== undefined) {
-              const pnlValue = parseFloat(tokenData.pnl) || 0;
-              const valueClass = getValueClass(pnlValue);
-              chgEl.className = 'token-chg ' + valueClass;
-              chgEl.textContent = (pnlValue >= 0 ? '+' : '') + '$' + pnlValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            }
-          }
+      if (!tokenKey || data.tokens[tokenKey] === undefined) return;
+      const td = data.tokens[tokenKey];
+      const amount = typeof td === 'number' ? td : (parseFloat(td.amount) || 0);
+      if (amount <= 0) {
+        card.style.display = 'none';
+        return;
+      }
+      card.style.display = 'flex';
+      const qtyEl = card.querySelector('.token-qty');
+      const valueEl = card.querySelector('.token-value');
+      const chgEl = card.querySelector('.token-chg');
+      if (qtyEl) {
+        if (tokenKey === 'BTC') qtyEl.textContent = amount.toFixed(8) + ' BTC';
+        else if (tokenKey === 'SOL') qtyEl.textContent = amount.toFixed(5) + ' SOL';
+        else if (tokenKey === 'ETH') qtyEl.textContent = amount.toFixed(5) + ' ETH';
+        else if (tokenKey === 'MON') qtyEl.textContent = amount.toFixed(2) + ' MON';
+      }
+      if (typeof td === 'object') {
+        if (valueEl) valueEl.textContent = formatUSD(td.usd || 0);
+        if (chgEl) {
+          const p = parseSignedValue(td.pnl);
+          chgEl.className = 'token-chg ' + getValueClass(p);
+          chgEl.textContent = formatSignedUSD(p);
         }
       }
     });
   }
-  
-  // Render custom tokens to main token list
-  if (customTokens && customTokens.length > 0) {
-    const tokenList = document.querySelector('.token-list');
-    
-    // Remove existing custom token cards (those with data-custom-id)
-    tokenList.querySelectorAll('[data-custom-id]').forEach(el => el.remove());
-    
-    // Render each custom token
-    customTokens.forEach(token => {
-      const amount = parseFloat(token.amount) || 0;
-      
-      // Hide/show based on amount <= 0
-      if (amount <= 0) return;
-      
-      const card = document.createElement('div');
-      card.className = 'token-card';
-      card.setAttribute('data-custom-id', token.id);
-      card.setAttribute('onclick', 'rippleEl(event,this)');
-      
-      // Icon - use image from Helius or fallback
-      let iconHTML;
-      if (token.image && token.image.trim()) {
-        iconHTML = `<img src="${token.image}" alt="${token.symbol}" style="width:50px;height:50px;border-radius:25px;object-fit:cover;" onerror="this.src='data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2050%2050%22%3E%3Ccircle%20cx=%2225%22%20cy=%2225%22%20r=%2225%22%20fill=%22%239333ea%22/%3E%3Ctext%20x=%2250%25%22%20y=%2256%25%22%20text-anchor=%22middle%22%20dominant-baseline=%22middle%22%20font-size=%2224%22%20font-weight=%22900%22%20fill=%22white%22%20font-family=%22Arial%22%3E%3F%3C/text%3E%3C/svg%3E'">`;
-      } else {
-        // Fallback icon - purple circle with ?
-        iconHTML = `<svg width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="25" fill="#9333ea"/><text x="50%" y="56%" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="900" fill="white" font-family="Arial">?</text></svg>`;
-      }
-      
-      const pnlValue = parseFloat(token.pnl) || 0;
-      const pnlClass = getValueClass(pnlValue);
-      const usdValue = parseFloat(token.usdValue) || 0;
-      
-      card.innerHTML = `
-        <div class="rh"></div>
-        <div class="token-icon">${iconHTML}</div>
-        <div class="token-mid">
-          <div class="token-name-row">
-            <span class="token-name">${token.name || 'Unknown'}</span>
-          </div>
-          <div class="token-qty">${amount.toLocaleString('en-US', {maximumFractionDigits:6})} ${token.symbol || 'TOKEN'}</div>
-        </div>
-        <div class="token-right">
-          <div class="token-value">$${usdValue.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
-          <div class="token-chg ${pnlClass}">${pnlValue >= 0 ? '+' : ''}$${pnlValue.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
-        </div>
-      `;
-      
-      tokenList.appendChild(card);
+
+  const tokenList = document.querySelector('.token-list');
+  tokenList.querySelectorAll('[data-custom-id]').forEach(el => el.remove());
+  customTokens.forEach(token => {
+    const amount = parseFloat(token.amount) || 0;
+    if (amount <= 0) return;
+    const card = document.createElement('div');
+    card.className = 'token-card';
+    card.setAttribute('data-custom-id', token.id);
+    card.setAttribute('onclick', 'rippleEl(event,this)');
+    const iconHTML = token.image && token.image.trim()
+      ? `<img src="${token.image}" alt="${token.symbol}" style="width:50px;height:50px;border-radius:25px;object-fit:cover;" onerror="this.src='data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2050%2050%22%3E%3Ccircle%20cx=%2225%22%20cy=%2225%22%20r=%2225%22%20fill=%22%239333ea%22/%3E%3Ctext%20x=%2250%25%22%20y=%2256%25%22%20text-anchor=%22middle%22%20dominant-baseline=%22middle%22%20font-size=%2224%22%20font-weight=%22900%22%20fill=%22white%22%20font-family=%22Arial%22%3E%3F%3C/text%3E%3C/svg%3E'">`
+      : `<svg width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="25" fill="#9333ea"/><text x="50%" y="56%" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="900" fill="white" font-family="Arial">?</text></svg>`;
+    const pnlValue = parseSignedValue(token.pnl);
+    const usdValue = parseFloat(token.usdValue) || 0;
+    card.innerHTML = `
+      <div class="rh"></div>
+      <div class="token-icon">${iconHTML}</div>
+      <div class="token-mid">
+        <div class="token-name-row"><span class="token-name">${token.name || 'Unknown'}</span></div>
+        <div class="token-qty">${amount.toLocaleString('en-US', { maximumFractionDigits: 6 })} ${token.symbol || 'TOKEN'}</div>
+      </div>
+      <div class="token-right">
+        <div class="token-value">${formatUSD(usdValue)}</div>
+        <div class="token-chg ${getValueClass(pnlValue)}">${formatSignedUSD(pnlValue)}</div>
+      </div>
+    `;
+    tokenList.appendChild(card);
+  });
+}
+
+function checkAndApplyAutoBalance() {
+  let data;
+  try { data = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) { return; }
+  if (!data) return;
+  abCounter = (data.autoBalance?.counter || 0) + 1;
+  abTarget = data.autoBalance?.everyRefresh || 1;
+  const solAmountInc = parseFloat(data.autoBalance?.solAmount) || 0;
+  const solUSDInc = parseFloat(data.autoBalance?.solUSD) || 0;
+  if (abCounter >= abTarget && (solAmountInc > 0 || solUSDInc > 0)) {
+    if (!data.tokens) data.tokens = {};
+    if (!data.tokens.SOL || typeof data.tokens.SOL === 'number') {
+      data.tokens.SOL = { amount: parseFloat(data.tokens.SOL) || 0, usd: 0, pnl: 0 };
+    }
+    data.tokens.SOL.amount = (parseFloat(data.tokens.SOL.amount) || 0) + solAmountInc;
+    data.tokens.SOL.usd = (parseFloat(data.tokens.SOL.usd) || 0) + solUSDInc;
+    abCounter = 0;
+  }
+  if (!data.autoBalance) data.autoBalance = {};
+  data.autoBalance.counter = abCounter;
+  if (data.autoTotalBalance !== false) data.walletBalance = computeTotalBalanceFromData(data);
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+  applySettingsToUI(data);
+  updateProgress();
+}
+
+function runLivePreview() {
+  const preview = gatherSettings();
+  if (preview.autoTotalBalance) preview.walletBalance = computeTotalBalanceFromData(preview);
+  applySettingsToUI(preview);
+}
+
+function wireLivePreview() {
+  const body = document.getElementById('sBody');
+  if (!body) return;
+  body.addEventListener('input', e => {
+    const id = e.target?.id || '';
+    if (id.startsWith('ct') || id.startsWith('tb_') || id === 'cashAmount' || id.startsWith('wallet') || id.startsWith('util')) {
+      runLivePreview();
+    }
+  });
+  body.addEventListener('change', runLivePreview);
+}
+
+function selectedUtilityTokens() {
+  return ['SOL','ETH','BTC','MON'].filter(t => document.getElementById('utilTok_' + t)?.checked);
+}
+
+function computeUtilityAmount() {
+  const mode = document.getElementById('utilMode').value;
+  const min = parseFloat(document.getElementById('utilMin').value) || 0;
+  const max = parseFloat(document.getElementById('utilMax').value) || 0;
+  const fixed = parseFloat(document.getElementById('utilFixed').value) || 0;
+  if (mode === 'fixed') return fixed;
+  if (mode === 'random' || mode === 'auto') {
+    const lo = Math.min(min, max);
+    const hi = Math.max(min, max);
+    return lo + Math.random() * (hi - lo);
+  }
+  return fixed;
+}
+
+function applyUtilityUpdate() {
+  const tokens = selectedUtilityTokens();
+  if (!tokens.length) return;
+  const amount = computeUtilityAmount();
+  tokens.forEach(sym => {
+    const amountEl = document.getElementById('tb_' + sym);
+    const usdEl = document.getElementById('tb_' + sym + '_usd');
+    if (!amountEl || !usdEl) return;
+    amountEl.value = amount.toFixed(6);
+    usdEl.value = (amount * (tokenApproxPrice[sym] || 0)).toFixed(2);
+  });
+  runLivePreview();
+  saveSettings();
+}
+
+function runUtilityOnce() {
+  const mode = document.getElementById('utilMode').value;
+  if (mode === 'manual' || mode === 'random' || mode === 'fixed') {
+    applyUtilityUpdate();
+    document.getElementById('utilityStatus').textContent = 'Updated once.';
+  }
+}
+
+function startUtilityAuto() {
+  stopUtilityAuto();
+  const sec = Math.max(1, parseFloat(document.getElementById('utilInterval').value) || 5);
+  utilityTimer = setInterval(applyUtilityUpdate, sec * 1000);
+  document.getElementById('utilityStatus').textContent = `Running every ${sec}s`;
+}
+
+function stopUtilityAuto() {
+  if (utilityTimer) clearInterval(utilityTimer);
+  utilityTimer = null;
+  document.getElementById('utilityStatus').textContent = 'Stopped';
+}
+
+function randomAddress() {
+  const alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+  let out = '';
+  for (let i = 0; i < 44; i++) out += alphabet[Math.floor(Math.random() * alphabet.length)];
+  return out;
+}
+
+function txTokenIcon(token) {
+  const map = { SOL: '◎', ETH: '◆', BTC: '₿', MON: '◉', USDT: 'T', USDC: '$' };
+  return `<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:11px;background:#2d2f39;color:#fff;font-size:12px">${map[token] || '?'}</span>`;
+}
+
+function openTxGenerator() {
+  document.getElementById('txModal').classList.add('active');
+}
+
+function closeTxGenerator(e) {
+  if (e && e.target && e.target.id !== 'txModal') return;
+  document.getElementById('txModal').classList.remove('active');
+}
+
+function randomizeTxAddress() {
+  document.getElementById('txFrom').value = randomAddress();
+}
+
+function previewTx() {
+  const type = document.getElementById('txType').value;
+  const token = document.getElementById('txToken').value;
+  const amount = parseFloat(document.getElementById('txAmount').value) || 0;
+  const date = document.getElementById('txDate').value || new Date().toISOString();
+  const from = document.getElementById('txFrom').value || randomAddress();
+  const positive = type === 'Received';
+  const preview = document.getElementById('txPreview');
+  preview.style.display = 'block';
+  preview.innerHTML = `
+    <div class="tx-preview-row"><strong>Status</strong><span>succeeded</span></div>
+    <div class="tx-preview-row"><strong>Type</strong><span>${type}</span></div>
+    <div class="tx-preview-row"><strong>Token</strong><span style="display:inline-flex;align-items:center;gap:8px">${txTokenIcon(token)} ${token}</span></div>
+    <div class="tx-preview-row"><strong>Amount</strong><span class="tx-amt ${positive ? 'pos' : 'neg'}">${positive ? '+' : '-'}${amount} ${token}</span></div>
+    <div class="tx-preview-row"><strong>Date</strong><span>${new Date(date).toLocaleString()}</span></div>
+    <div class="tx-preview-row"><strong>From</strong><span style="word-break:break-all">${from}</span></div>
+  `;
+  txHistory.unshift({ type, token, amount, date, from, status: 'succeeded' });
+  txHistory = txHistory.slice(0, 30);
+  renderTxHistory();
+  saveSettings();
+}
+
+function renderTxHistory() {
+  const list = document.getElementById('txList');
+  if (!list) return;
+  list.innerHTML = '';
+  txHistory.forEach(tx => {
+    const el = document.createElement('div');
+    el.className = 'tx-item';
+    const pos = tx.type === 'Received';
+    el.innerHTML = `
+      <div class="tx-item-top">
+        <strong>${tx.type} ${tx.token}</strong>
+        <span class="tx-amt ${pos ? 'pos' : 'neg'}">${pos ? '+' : '-'}${parseFloat(tx.amount) || 0}</span>
+      </div>
+      <div class="tx-meta">${new Date(tx.date).toLocaleString()} • ${tx.status}</div>
+      <div class="tx-meta">${tx.from}</div>
+    `;
+    list.appendChild(el);
+  });
+}
+
+let swRegistration = null;
+const VAPID_PUBLIC_KEY = 'REPLACE_WITH_REAL_VAPID_PUBLIC_KEY';
+
+async function setupPush() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  try {
+    swRegistration = await navigator.serviceWorker.register('./service-worker.js');
+  } catch (e) {}
+}
+
+function updatePushStatus() {
+  const perm = Notification.permission;
+  const permEl = document.getElementById('pushPermissionStatus');
+  const subEl = document.getElementById('pushSubscriptionStatus');
+  if (permEl) permEl.textContent = 'Permission: ' + perm;
+  if (!swRegistration) {
+    if (subEl) subEl.textContent = 'Subscription: service worker not ready';
+    return;
+  }
+  swRegistration.pushManager.getSubscription().then(sub => {
+    if (subEl) subEl.textContent = 'Subscription: ' + (sub ? 'active' : 'not subscribed');
+  }).catch(() => {
+    if (subEl) subEl.textContent = 'Subscription: unavailable';
+  });
+}
+
+async function requestPushPermission() {
+  if (!('Notification' in window)) return;
+  await Notification.requestPermission();
+  updatePushStatus();
+}
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
+  return outputArray;
+}
+
+async function subscribeToPush() {
+  if (!swRegistration || Notification.permission !== 'granted' || !VAPID_PUBLIC_KEY || VAPID_PUBLIC_KEY.startsWith('REPLACE_')) {
+    updatePushStatus();
+    return;
+  }
+  try {
+    const sub = await swRegistration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
     });
+    await sendSubscriptionToBackend(sub);
+    updatePushStatus();
+  } catch (e) {
+    updatePushStatus();
+  }
+}
+
+async function sendSubscriptionToBackend(subscription) {
+  const endpoint = '/api/push/subscribe';
+  try {
+    await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subscription })
+    });
+  } catch (e) {
+    // Backend integration placeholder; keep frontend flow ready.
   }
 }
 
 function rippleEl(e, el) {
-  const h = el.querySelector('.rh'); if (!h) return;
-  const r = document.createElement('div'); r.className = 'rip';
-  const rect = el.getBoundingClientRect(), size = Math.max(rect.width, rect.height) * 1.5;
-  r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
-  h.appendChild(r); r.addEventListener('animationend', () => r.remove());
+  const h = el.querySelector('.rh');
+  if (!h) return;
+  const r = document.createElement('div');
+  r.className = 'rip';
+  const rect = el.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height) * 1.5;
+  r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX - rect.left - size / 2}px;top:${e.clientY - rect.top - size / 2}px`;
+  h.appendChild(r);
+  r.addEventListener('animationend', () => r.remove());
 }
+
 function setNav(el) {
   document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
   el.classList.add('active');
