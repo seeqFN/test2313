@@ -1370,34 +1370,76 @@ function renderTxHistory() {
 }
 
 let swRegistration = null;
-const VAPID_PUBLIC_KEY = 'REPLACE_WITH_REAL_VAPID_PUBLIC_KEY';
+const PUSH_SUB_STORAGE_KEY = 'larpzwallet_push_subscription_v1';
+const VAPID_PUBLIC_KEY = 'BJGFylMnTU9r_pmCeMdUPbMtmgybtqKgZADgGj0FufmxgLbYXVwry7QjAxRk-Jo4PBpTbQoRoThaaW0r8v7Q98w';
+
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+function isStandaloneMode() {
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+function setPushSubscriptionStatus(message) {
+  const subEl = document.getElementById('pushSubscriptionStatus');
+  if (subEl) subEl.textContent = 'Subscription: ' + message;
+}
 
 async function setupPush() {
-  if (!('serviceWorker' in navigator)) return;
+  console.log('[Push] Notification permission status:', ('Notification' in window) ? Notification.permission : 'unsupported');
+  console.log('[Push] PushManager available:', 'PushManager' in window);
+  if (!('serviceWorker' in navigator)) {
+    console.warn('[Push] Service Worker not supported in this browser');
+    return;
+  }
   try {
     swRegistration = await navigator.serviceWorker.register('/service-worker.js');
-  } catch (e) {}
+    console.log('[Push] Service worker registered:', swRegistration.scope);
+    swRegistration = await navigator.serviceWorker.ready;
+    console.log('[Push] Service worker ready');
+  } catch (e) {
+    console.error('[Push] Service worker registration failed:', e);
+  }
 }
 
 function updatePushStatus() {
-  const perm = Notification.permission;
+  const perm = ('Notification' in window) ? Notification.permission : 'unsupported';
   const permEl = document.getElementById('pushPermissionStatus');
-  const subEl = document.getElementById('pushSubscriptionStatus');
   if (permEl) permEl.textContent = 'Permission: ' + perm;
+  if (!('PushManager' in window)) {
+    setPushSubscriptionStatus('PushManager not supported');
+    return;
+  }
+  if (isIOS() && !isStandaloneMode()) {
+    setPushSubscriptionStatus('Open from Home Screen (A2HS) on iPhone');
+    return;
+  }
   if (!swRegistration) {
-    if (subEl) subEl.textContent = 'Subscription: service worker not ready';
+    setPushSubscriptionStatus('service worker not ready');
     return;
   }
   swRegistration.pushManager.getSubscription().then(sub => {
-    if (subEl) subEl.textContent = 'Subscription: ' + (sub ? 'active' : 'not subscribed');
-  }).catch(() => {
-    if (subEl) subEl.textContent = 'Subscription: unavailable';
+    if (sub) {
+      try { localStorage.setItem(PUSH_SUB_STORAGE_KEY, JSON.stringify(sub.toJSON())); } catch (e) {}
+      setPushSubscriptionStatus('active');
+    } else {
+      const stored = localStorage.getItem(PUSH_SUB_STORAGE_KEY);
+      setPushSubscriptionStatus(stored ? 'not active (cached debug exists)' : 'not subscribed');
+    }
+  }).catch((e) => {
+    console.error('[Push] Failed to read subscription:', e);
+    setPushSubscriptionStatus('error: ' + (e?.message || String(e)));
   });
 }
 
 async function requestPushPermission() {
-  if (!('Notification' in window)) return;
-  await Notification.requestPermission();
+  if (!('Notification' in window)) {
+    console.warn('[Push] Notification API not supported');
+    return;
+  }
+  const result = await Notification.requestPermission();
+  console.log('[Push] Notification permission status:', result);
   updatePushStatus();
 }
 
@@ -1411,32 +1453,68 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 async function subscribeToPush() {
-  if (!swRegistration || Notification.permission !== 'granted' || !VAPID_PUBLIC_KEY || VAPID_PUBLIC_KEY.startsWith('REPLACE_')) {
+  if (!('PushManager' in window)) {
+    setPushSubscriptionStatus('PushManager not supported in this browser');
+    console.warn('[Push] PushManager not supported');
+    return;
+  }
+  if (isIOS() && !isStandaloneMode()) {
+    setPushSubscriptionStatus('iPhone requires Home Screen app mode');
+    console.warn('[Push] iOS push attempted outside standalone mode');
+    return;
+  }
+  if (!('Notification' in window) || Notification.permission !== 'granted') {
+    setPushSubscriptionStatus('notification permission not granted');
+    console.warn('[Push] Notification permission is not granted:', ('Notification' in window) ? Notification.permission : 'unsupported');
+    return;
+  }
+  if (!VAPID_PUBLIC_KEY || VAPID_PUBLIC_KEY.startsWith('REPLACE_')) {
+    setPushSubscriptionStatus('missing VAPID public key');
+    console.warn('[Push] Missing real VAPID public key');
+    return;
+  }
+  if (!swRegistration) {
+    await setupPush();
+  }
+  if (!swRegistration) {
+    setPushSubscriptionStatus('service worker registration unavailable');
     updatePushStatus();
     return;
   }
   try {
-    const sub = await swRegistration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-    });
+    let sub = await swRegistration.pushManager.getSubscription();
+    if (!sub) {
+      sub = await swRegistration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+      });
+    }
+    const subscriptionJson = sub.toJSON();
+    try { localStorage.setItem(PUSH_SUB_STORAGE_KEY, JSON.stringify(subscriptionJson)); } catch (e) {}
+    console.log('[Push] Subscribe success:', subscriptionJson);
     await sendSubscriptionToBackend(sub);
+    setPushSubscriptionStatus('active');
     updatePushStatus();
   } catch (e) {
+    console.error('[Push] Subscribe failed:', e);
+    setPushSubscriptionStatus('error: ' + (e?.message || String(e)));
     updatePushStatus();
   }
 }
 
 async function sendSubscriptionToBackend(subscription) {
-  const endpoint = '/api/push/subscribe';
+  const endpoint = '/api/save-subscription';
   try {
+    const payload = subscription.toJSON ? subscription.toJSON() : subscription;
     await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ subscription })
+      body: JSON.stringify({ subscription: payload })
     });
+    console.log('[Push] Subscription sent to backend:', endpoint);
   } catch (e) {
-    // Backend integration placeholder; keep frontend flow ready.
+    console.error('[Push] Failed sending subscription to backend:', e);
+    throw e;
   }
 }
 
