@@ -66,7 +66,15 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
 .token-right{text-align:right;flex-shrink:0}
 .token-value{font-size:16px;font-weight:600;letter-spacing:-.3px}
 .token-chg{font-size:13px;font-weight:500;margin-top:3px;color:var(--red)}
+.token-chg.positive{color:#22c55e}
+.token-chg.negative{color:var(--red)}
 .token-chg.neutral{color:var(--text2)}
+.change-usd.positive{color:#22c55e}
+.change-usd.negative{color:var(--red)}
+.change-usd.neutral{color:var(--text2)}
+.change-pct.positive{background:#16a34a;color:#fff}
+.change-pct.negative{background:var(--red-bg);color:#fff}
+.change-pct.neutral{background:#3a3a3a;color:#ccc}
 .bottom-nav{display:flex;align-items:center;justify-content:space-around;padding:12px 10px;padding-bottom:max(30px, calc(env(safe-area-inset-bottom) + 10px));background:var(--bg);border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
 .nav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;width:52px;height:44px;border-radius:12px;cursor:pointer;transition:opacity .15s,transform .1s;color:var(--text2)}
 .nav-btn.active{color:var(--purple)}
@@ -144,6 +152,12 @@ html,body{background:#000;color:var(--text);font-family:var(--font);width:100%;h
 .rh{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none}
 .rip{position:absolute;border-radius:50%;background:rgba(255,255,255,.08);transform:scale(0);animation:rip .55s ease-out forwards;pointer-events:none}
 @keyframes rip{to{transform:scale(5);opacity:0}}
+
+/* Pull to Refresh */
+.ptr-indicator{position:absolute;top:0;left:50%;transform:translateX(-50%) translateY(-100%);width:40px;height:40px;background:var(--surface);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .3s ease;z-index:100;opacity:0}
+.ptr-indicator.visible{opacity:1;transform:translateX(-50%) translateY(calc(-100% + var(--pull-dist, 0px)))}
+.ptr-spinner{width:20px;height:20px;border:2px solid #3a3a3a;border-top-color:var(--purple);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
