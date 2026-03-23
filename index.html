@@ -772,17 +772,17 @@ function renderCustomTokens() {
       <div class="ct-field">
         <span class="ct-field-label">Mint</span>
         <div style="flex:1;display:flex;gap:4px;align-items:center">
-          <input class="s-input" style="font-size:11px;padding:8px 10px;flex:1" id="ctMint_${t.id}" type="text" placeholder="Solana mint address" value="${t.mint}" readonly>
+          <input class="s-input" style="font-size:11px;padding:8px 10px;flex:1" id="ctMint_${t.id}" type="text" placeholder="Solana mint address" value="${t.mint}" oninput="syncCustomTokenData(${t.id}, 'mint')">
           <button class="ct-fetch-btn" id="ctFetch_${t.id}" onclick="fetchTokenFromHelius(${t.id})">Fetch</button>
         </div>
       </div>
       <div class="ct-field">
         <span class="ct-field-label">Name</span>
-        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctName_${t.id}" type="text" placeholder="Token name" value="${t.name}" oninput="syncCustomTokenData(${t.id}, 'name')" readonly>
+        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctName_${t.id}" type="text" placeholder="Token name" value="${t.name}" oninput="syncCustomTokenData(${t.id}, 'name')">
       </div>
       <div class="ct-field">
         <span class="ct-field-label">Symbol</span>
-        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctSymbol_${t.id}" type="text" placeholder="Symbol" value="${t.symbol}" oninput="syncCustomTokenData(${t.id}, 'symbol')" readonly>
+        <input class="s-input" style="font-size:11px;padding:8px 10px" id="ctSymbol_${t.id}" type="text" placeholder="Symbol" value="${t.symbol}" oninput="syncCustomTokenData(${t.id}, 'symbol')">
       </div>
       <div class="ct-field">
         <span class="ct-field-label">Amt</span>
