@@ -522,7 +522,121 @@ let abCounter = 2, abTarget = 1;
 let customTokens = [];
 let currentEmoji = '🤠';
 
-window.addEventListener('DOMContentLoaded', () => { loadSettings(); renderCustomTokens(); });
+window.addEventListener('DOMContentLoaded', () => { 
+  loadSettings(); 
+  renderCustomTokens();
+  checkAndApplyAutoBalance();
+  setupPullToRefresh();
+});
+
+// ===== HELPER: Determine color class from numeric value =====
+function getValueClass(value) {
+  const num = parseFloat(value);
+  if (isNaN(num) || num === 0) return 'neutral';
+  return num > 0 ? 'positive' : 'negative';
+}
+
+// ===== PULL TO REFRESH =====
+function setupPullToRefresh() {
+  const scrollArea = document.querySelector('.scroll-area');
+  let startY = 0, currentY = 0, pulling = false;
+  const PTR_THRESHOLD = 120; // pixels to pull before refresh
+  
+  scrollArea.addEventListener('touchstart', (e) => {
+    if (scrollArea.scrollTop === 0) {
+      startY = e.touches[0].clientY;
+      pulling = true;
+    }
+  }, { passive: true });
+  
+  scrollArea.addEventListener('touchmove', (e) => {
+    if (!pulling || scrollArea.scrollTop > 0) {
+      pulling = false;
+      return;
+    }
+    
+    currentY = e.touches[0].clientY;
+    const dist = Math.max(0, currentY - startY);
+    
+    if (dist > 0) {
+      e.preventDefault(); // prevent default scroll
+      scrollArea.style.transform = `translateY(${dist * 0.5}px)`;
+    }
+  }, { passive: false });
+  
+  scrollArea.addEventListener('touchend', (e) => {
+    if (!pulling) return;
+    pulling = false;
+    
+    const dist = Math.max(0, currentY - startY);
+    scrollArea.style.transform = '';
+    scrollArea.style.transition = 'transform 0.3s ease';
+    
+    if (dist >= PTR_THRESHOLD) {
+      setTimeout(() => {
+        location.reload();
+      }, 300);
+    }
+    
+    setTimeout(() => {
+      scrollArea.style.transition = '';
+    }, 300);
+  }, { passive: true });
+}
+
+// ===== AUTO BALANCE ON REFRESH =====
+function checkAndApplyAutoBalance() {
+  let data;
+  try { data = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) { return; }
+  if (!data) return;
+  
+  // Increment counter
+  abCounter = (data.autoBalance?.counter || 0) + 1;
+  abTarget = data.autoBalance?.everyRefresh || 1;
+  
+  const solIncrement = parseFloat(data.autoBalance?.solPlus) || 0;
+  
+  // Check if counter reached threshold and increment is valid
+  if (abCounter >= abTarget && solIncrement > 0) {
+    // Get current SOL amount
+    const currentSOL = (typeof data.tokens?.SOL === 'number' ? 
+      data.tokens.SOL : data.tokens?.SOL?.amount) || 0;
+    
+    // Add increment
+    const newSOLAmount = currentSOL + solIncrement;
+    
+    // Update tokens structure (ensure new format)
+    if (!data.tokens) data.tokens = {};
+    if (typeof data.tokens.SOL === 'number') {
+      data.tokens.SOL = { amount: data.tokens.SOL, usd: 0, pnl: 0 };
+    }
+    data.tokens.SOL.amount = newSOLAmount;
+    
+    // Reset counter
+    abCounter = 0;
+    
+    // Update autoBalance in data
+    if (!data.autoBalance) data.autoBalance = {};
+    data.autoBalance.counter = abCounter;
+    
+    // Save to localStorage
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+    
+    // Apply to UI immediately
+    applySettingsToUI(data);
+    updateProgress();
+  } else {
+    // Just save the incremented counter
+    if (data.autoBalance) {
+      data.autoBalance.counter = abCounter;
+    } else {
+      data.autoBalance = { counter: abCounter };
+    }
+    
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+    updateProgress();
+  }
+}
 
 function openSettings() {
   document.getElementById('sOverlay').classList.add('active');
@@ -581,7 +695,17 @@ function resetCounter() {
   abCounter = 0;
   abTarget = parseInt(document.getElementById('abEvery').value) || 1;
   updateProgress();
+  
+  // Save to localStorage
+  let data;
+  try { data = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) {}
+  if (data && data.autoBalance) {
+    data.autoBalance.counter = 0;
+    data.autoBalance.solPlus = 0;
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+  }
 }
+
 function updateProgress() {
   document.getElementById('abProgress').textContent = `${abCounter} / ${abTarget}`;
 }
@@ -746,6 +870,43 @@ function applySettingsToUI(data) {
     }
   }
   
+  // Apply main balance change with dynamic colors
+  if (data.tokens) {
+    // Calculate total balance change
+    let totalChangeUSD = 0;
+    ['SOL','ETH','BTC','MON','SUI','POL','HYPE','USDT','USDC'].forEach(s => {
+      const tokenData = data.tokens[s];
+      if (tokenData && typeof tokenData === 'object') {
+        totalChangeUSD += (tokenData.pnl || 0);
+      }
+    });
+    
+    const changeUSDEl = document.querySelector('.change-usd');
+    const changePctEl = document.querySelector('.change-pct');
+    
+    if (changeUSDEl) {
+      const changeClass = getValueClass(totalChangeUSD);
+      changeUSDEl.className = 'change-usd ' + changeClass;
+      changeUSDEl.textContent = (totalChangeUSD >= 0 ? '+' : '') + '$' + totalChangeUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    
+    if (changePctEl) {
+      // Calculate percentage based on total USD value
+      let totalUSD = 0;
+      ['SOL','ETH','BTC','MON','SUI','POL','HYPE','USDT','USDC'].forEach(s => {
+        const tokenData = data.tokens[s];
+        if (tokenData && typeof tokenData === 'object') {
+          totalUSD += (tokenData.usd || 0);
+        }
+      });
+      const totalWithChange = totalUSD + totalChangeUSD;
+      const pctChange = totalWithChange > 0 ? ((totalChangeUSD / totalUSD) * 100) : 0;
+      const pctClass = getValueClass(pctChange);
+      changePctEl.className = 'change-pct ' + pctClass;
+      changePctEl.textContent = (pctChange >= 0 ? '+' : '') + pctChange.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
+    }
+  }
+  
   // Apply cash balance to cash card
   if (data.cashBalance !== undefined) {
     const cashAmount = data.cashBalance.amount ?? 0;
@@ -807,10 +968,9 @@ function applySettingsToUI(data) {
             
             if (chgEl && tokenData.pnl !== undefined) {
               const pnlValue = parseFloat(tokenData.pnl) || 0;
-              const isNegative = pnlValue < 0;
+              const valueClass = getValueClass(pnlValue);
+              chgEl.className = 'token-chg ' + valueClass;
               chgEl.textContent = (pnlValue >= 0 ? '+' : '') + '$' + pnlValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-              chgEl.classList.toggle('neutral', pnlValue === 0 || isNaN(pnlValue));
-              if (isNegative) chgEl.classList.remove('neutral');
             }
           }
         }
