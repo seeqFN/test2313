@@ -691,6 +691,39 @@ function removeCustomToken(id) {
   renderCustomTokens();
 }
 
+// Helper: Extract image from Helius response - tries multiple sources
+function extractImageFromHelius(content) {
+  if (!content) return '';
+  
+  // Priority 1: content.links.image
+  if (content.links?.image) return content.links.image;
+  
+  // Priority 2: content.metadata.image
+  if (content.metadata?.image) return content.metadata.image;
+  
+  // Priority 3: files array - check for image MIME types
+  if (Array.isArray(content.files) && content.files.length > 0) {
+    for (const file of content.files) {
+      if (file.uri) {
+        const mime = file.mime?.toLowerCase() || '';
+        // Check if it's an image
+        if (mime.startsWith('image/') || file.uri.match(/\.(png|jpg|jpeg|gif|webp|svg)$/i)) {
+          return file.uri;
+        }
+      }
+    }
+    // Fallback: use first file URI if content suggests it's an image
+    if (content.files[0]?.uri) {
+      const firstUri = content.files[0].uri;
+      if (firstUri.match(/\.(png|jpg|jpeg|gif|webp|svg)$/i)) {
+        return firstUri;
+      }
+    }
+  }
+  
+  return '';
+}
+
 async function fetchTokenFromHelius(id) {
   const mintInput = document.getElementById('ctMint_' + id);
   const mintAddress = mintInput?.value?.trim();
@@ -727,7 +760,8 @@ async function fetchTokenFromHelius(id) {
     
     if (result.result && result.result.content) {
       const metadata = result.result.content.metadata;
-      const image = result.result.content.links?.image || '';
+      const content = result.result.content;
+      const image = extractImageFromHelius(content);
       
       const token = customTokens.find(t => t.id === id);
       if (token) {
